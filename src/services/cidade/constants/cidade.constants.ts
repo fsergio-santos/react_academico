@@ -1,0 +1,36 @@
+const ENTITY_NAME = "Cidade";
+
+export const CIDADE = {
+  ENTITY: ENTITY_NAME,
+
+  ALIAS: "cidade",
+
+  FIELDS: {
+    ID: "idCidade",
+    CODIGO: "codCidade",
+    NOME: "nomeCidade",
+  },
+
+  INPUT_ERROR: {
+    ID: {
+      BLANK: `O código de identificação do ${ENTITY_NAME} deve ser informado`,
+      VALID: `Informe um código de identificação válido para o ${ENTITY_NAME}`,
+    },
+    CODIGO: {
+      BLANK: `O código do ${ENTITY_NAME} deve ser informado`,
+      VALID: `Informe um código válido para o ${ENTITY_NAME}`,
+      MAX_LEN: `O código do ${ENTITY_NAME} deve conter no máximo 20 caracteres`,
+      MIN_LEN: `O código do ${ENTITY_NAME} deve conter no mínimo 6 caracteres`,
+      STRING: `O código do ${ENTITY_NAME} dever ser um texto `,
+    },
+    NOME: {
+      BLANK: `O nome  da ${ENTITY_NAME} deve ser informado`,
+      VALID: `O nome  da ${ENTITY_NAME} não está digitado corretamente`,
+      MAX_LEN: `O nome  da ${ENTITY_NAME} deve conter no máximo 100 caracteres`,
+      MIN_LEN: `O nome  da ${ENTITY_NAME} deve conter no mínimo 6 caracteres`,
+      STRING: `O nome  da ${ENTITY_NAME} dever ser um texto `,
+    },
+  },
+};
+
+export const fieldsCidade = Object.values(CIDADE.FIELDS);

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import type { Cidade } from "../../type/Cidade";
+import type { Cidade } from "../../services/cidade/type/cidade";
 
-export default function Lista() {
+export default function ListarCidades() {
   // useState = hook - gancho - função
   // reagir as alterações na variável
   // renderiza -
@@ -17,14 +17,15 @@ export default function Lista() {
       //   .then((response: any) => {
       //     setCidades(response.data.dados);
       //   });
-      const response = await axios.get("http://localhost:8000/rest/sistema/cidade/listar");
-      if (response ){
+      const response = await axios.get(
+        "http://localhost:8000/rest/sistema/cidade/listar"
+      );
+      if (response) {
         setCidades(response.data.dados);
       }
     }
     getCidades();
   }, []);
-
 
   return (
     <div className="display">
@@ -48,7 +49,9 @@ export default function Lista() {
               <th>ID</th>
               <th>Código</th>
               <th>Nome</th>
-              <th className="center actions" colSpan={3}>Ação</th>
+              <th className="center actions" colSpan={3}>
+                Ação
+              </th>
             </tr>
           </thead>
           <tbody>

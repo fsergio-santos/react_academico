@@ -1,16 +1,12 @@
-import Layout from "./components/layout/Layout";
-import Lista from "./views/cidade/Lista";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { routes } from './services/router/Routes';
+
+const router = createBrowserRouter(routes);
 
 function App() {
   return (
     <div>
-      {/*
-        Componente pai  - Layout
-        Componente filho - Lista
-      */}
-      <Layout>
-        <Lista /> {/* Lista - children */}
-      </Layout>
+      <RouterProvider router={router} />
     </div>
   );
 }

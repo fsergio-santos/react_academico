@@ -1,10 +1,6 @@
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
-type LayoutProps = {
-  children?: ReactNode;
-};
-
-export default function Layout({ children }: LayoutProps) {
+export default function Layout() {
   return (
     <div id="defaultLayout">
       <aside>
@@ -13,7 +9,7 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
       <div className="content">
         <header>
-           <div className="system-title">Sistema Acadêmico</div>
+          <div className="system-title">Sistema Acadêmico</div>
           <div className="user-info">
             <span className="username">Francisco</span>
             <a href="#" className="btn btn-logout">
@@ -21,7 +17,9 @@ export default function Layout({ children }: LayoutProps) {
             </a>
           </div>
         </header>
-        <main>{children}</main>
+        <main>
+          <Outlet />
+        </main>
       </div>
     </div>
   );
