@@ -1,3 +1,5 @@
+import { criarMensagensOperacao } from "../../constants/criar.mensagem.operacao";
+
 const ENTITY_NAME = "Cidade";
 
 export const CIDADE = {
@@ -5,11 +7,17 @@ export const CIDADE = {
 
   ALIAS: "cidade",
 
+  DADOS_INICIAIS: {
+    idCidade: "",
+    codCidade: "",
+    nomeCidade: "",
+  },
+
   FIELDS: {
     ID: "idCidade",
     CODIGO: "codCidade",
     NOME: "nomeCidade",
-  },
+  } as const,
 
   INPUT_ERROR: {
     ID: {
@@ -31,6 +39,8 @@ export const CIDADE = {
       STRING: `O nome  da ${ENTITY_NAME} dever ser um texto `,
     },
   },
+
+  OPERACAO: criarMensagensOperacao(ENTITY_NAME),
 };
 
 export const fieldsCidade = Object.values(CIDADE.FIELDS);

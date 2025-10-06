@@ -12,20 +12,28 @@ export default function ListarCidades() {
   //pela primeira vez, quando o array for vázio.
   useEffect(() => {
     async function getCidades() {
+      console.log("no getCidades");
       // await axios
       //   .get("http://localhost:8000/rest/sistema/cidade/listar")
       //   .then((response: any) => {
       //     setCidades(response.data.dados);
       //   });
-      const response = await axios.get(
-        "http://localhost:8000/rest/sistema/cidade/listar"
-      );
-      if (response) {
-        setCidades(response.data.dados);
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/rest/sistema/cidade/listar"
+        );
+        console.log(response);
+        if (response) {
+          setCidades(response.data.dados);
+        }
+      } catch (error: any) {
+        console.log(error);
       }
     }
     getCidades();
   }, []);
+
+  console.log(cidades);
 
   return (
     <div className="display">
@@ -64,10 +72,10 @@ export default function ListarCidades() {
                   <a className="btn btn-edit">Atualizar</a>
                 </td>
                 <td className="center actions">
-                  <a className="btn btn-delete">Excluir</a>
+                  <a className="btn btn-danger">Excluir</a>
                 </td>
                 <td className="center actions">
-                  <a className="btn btn-show">Consulta</a>
+                  <a className="btn btn-info">Consulta</a>
                 </td>
               </tr>
             ))}
