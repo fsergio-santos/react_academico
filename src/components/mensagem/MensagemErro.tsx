@@ -11,7 +11,7 @@ const MensagemErro = ({ error, mensagem }: MensagemProps) => {
   );
   return (
     <Fragment>
-      {error && (
+      {error && unique.length > 0 && (
         <div className="invalid-feedback">
           {unique.map((item, index) => (
             <p key={index} style={{ margin: "0", color: "red" }}>

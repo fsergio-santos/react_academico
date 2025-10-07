@@ -16,9 +16,9 @@ function gerarRotasSistema(entity: string) {
   return {
     LISTAR: `/${base}/${LISTAR}`,
     CRIAR: `/${base}/${CRIAR}`,
-    POR_ID: `/${base}/${POR_ID}/`,
-    ATUALIZAR: `/${base}/${ATUALIZAR}/`,
-    EXCLUIR: `/${base}/${EXCLUIR}/`,
+    POR_ID: `/${base}/${POR_ID}`,
+    ATUALIZAR: `/${base}/${ATUALIZAR}`,
+    EXCLUIR: `/${base}/${EXCLUIR}`,
   };
 }
 

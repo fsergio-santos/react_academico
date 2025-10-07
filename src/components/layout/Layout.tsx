@@ -1,4 +1,5 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import { ROTA } from "../../services/router/Url";
 import "./layout.css";
 
 export default function Layout() {
@@ -6,13 +7,17 @@ export default function Layout() {
     <div id="defaultLayout">
       <aside>
         <a href="#">Dashboard</a>
-        <a href="#">Usuário</a>
+        <Link to={ROTA.CIDADE.LISTAR}>Cidades</Link>
       </aside>
       <div className="content">
         <header>
-          <div className="system-title">Sistema Acadêmico</div>
+          <div className="system-title">
+            <b>Sistema Acadêmico</b>
+          </div>
           <div className="user-info">
-            <span className="username">Francisco</span>
+            <span className="username">
+              <b>Francisco</b>
+            </span>
             <a href="#" className="btn btn-logout">
               Logout
             </a>

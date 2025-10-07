@@ -1,20 +1,34 @@
 import axios from "axios";
-import {
-  useState,
-  type FocusEvent,
-  type FormEvent,
-  type MouseEvent,
-} from "react";
+import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MensagemErro from "../../components/mensagem/MensagemErro";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
 import { BTN } from "../../services/constants/constants.button.operacao";
 import { ROTA } from "../../services/router/Url";
 
-export default function CriarCidade() {
+/***
+ *
+ * função para buscar a cidade pelo idCidade para
+ * depois fazer a alteração do registro se for necessário.
+ * @param idCidade = idCidade a ser pesquisada na tabela de cidade.
+ *
+ **/
+const buscarCidadeporId = async (idCidade: number): Promise<Cidade | null> => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/rest/sistema/cidade/buscar/${idCidade}`
+    );
+    return response.data.dados;
+  } catch (error: any) {
+    console.log(error);
+  }
+  return null;
+};
+
+export default function ExcluirCidade() {
   // estado para controlar o movimento entre os inputs
   const [touched, setTouched] = useState<boolean | null>(null);
   // estado para armazenar os dados do formulário cidade
@@ -23,6 +37,18 @@ export default function CriarCidade() {
   const [errors, setErrors] = useState<ErrosCidade>({});
   // hook para naveção entre páginas
   const navigate = useNavigate();
+  // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
+  const { idCidade } = useParams();
+
+  useEffect(() => {
+    async function getCidade() {
+      const cidade = await buscarCidadeporId(Number(idCidade));
+      if (cidade) {
+        setModel(cidade);
+      }
+    }
+    getCidade();
+  }, [idCidade]);
 
   /**
    * Função para lidar com a mudança de valor nos campos do formulário.
@@ -41,49 +67,9 @@ export default function CriarCidade() {
   };
 
   /**
-   * Valida um campo individualmente. Geralmente usado no evento onBlur.
-   * @param name - O nome do campo a ser validado.
-   */
-  const validateField = (
-    name: keyof Cidade,
-    e: FocusEvent<HTMLInputElement>
-  ) => {
-    let messages: string[] = [];
-    const value = model[name];
-    setTouched(true);
-    // Lógica de validação específica para cada campo
-    switch (name) {
-      case CIDADE.FIELDS.CODIGO:
-        if (!value) messages.push(CIDADE.INPUT_ERROR.CODIGO.BLANK);
-        if (value && typeof value !== "string")
-          messages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
-        break;
-      case CIDADE.FIELDS.NOME:
-        if (!value || String(value).trim().length === 0) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
-        }
-        if (String(value).length > 0 && String(value).length < 6) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
-        }
-        if (String(value).length > 100) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
-        }
-        break;
-    }
-
-    // Atualiza o estado de erros para o campo validado
-    setErrors((prev) => ({
-      ...prev,
-      [name]: messages.length > 0,
-      [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
-    }));
-  };
-
-  /**
    * Valida o formulário inteiro. Usado antes da submissão.
    * @returns 'true' se o formulário for válido, 'false' caso contrário.
    */
-
   const validarFormulario = (): boolean => {
     const newErrors: ErrosCidade = {};
     let isFormValid = true;
@@ -119,23 +105,57 @@ export default function CriarCidade() {
     return isFormValid;
   };
 
+  /**
+   * Valida um campo individualmente. Geralmente usado no evento onBlur.
+   * @param name - O nome do campo a ser validado.
+   */
+  const validateField = (name: keyof Cidade) => {
+    let messages: string[] = [];
+    const value = model[name];
+
+    // Lógica de validação específica para cada campo
+    switch (name) {
+      case CIDADE.FIELDS.CODIGO:
+        if (!value) messages.push(CIDADE.INPUT_ERROR.CODIGO.BLANK);
+        if (value && typeof value !== "string")
+          messages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
+        break;
+      case CIDADE.FIELDS.NOME:
+        if (!value || String(value).trim().length === 0) {
+          messages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
+        }
+        if (String(value).length > 0 && String(value).length < 6) {
+          messages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
+        }
+        if (String(value).length > 100) {
+          messages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
+        }
+        break;
+    }
+
+    // Atualiza o estado de erros para o campo validado
+    setErrors((prev) => ({
+      ...prev,
+      [name]: messages.length > 0,
+      [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
+    }));
+  };
+
   /*
    * função para estilizar o input conforme o seu estado, normal , validado, inválidado.
    */
-  const getInputClass = (field: keyof Cidade): string => {
-    if (!errors) return "form-control app-label mt-2";
 
-    const hasError = errors[field];
-    const wasTouched = touched; // ou touched[field] se for por campo
-
-    if (hasError) {
-      return "form-control is-invalid app-label input-error mt-2";
+  const getInputClass = (): string => {
+    if (touched) {
+      if (errors.codCidade || errors.nomeCidade) {
+        return "form-control is-invalid app-label input-error mt-2";
+      } else if (errors.codCidade || errors.nomeCidade) {
+        return "form-control is-valid app-label input-valid mt-2";
+      }
+    } else {
+      if (errors.codCidade || errors.nomeCidade)
+        return "form-control is-invalid app-label input-error mt-2";
     }
-
-    if (wasTouched && !hasError) {
-      return "form-control is-valid app-label input-valid mt-2";
-    }
-
     return "form-control app-label mt-2";
   };
 
@@ -149,12 +169,12 @@ export default function CriarCidade() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (validarFormulario()) {
-      const response = await axios.post(
-        "http://localhost:8000/rest/sistema/cidade/criar",
-        model
+      const response = await axios.delete(
+        `http://localhost:8000/rest/sistema/cidade/alterar/${idCidade}`
       );
       console.log("Formulário válido. Enviando dados:", response);
     } else {
+      console.log("Formulário inválido. Verifique os erros.");
     }
   };
 
@@ -166,7 +186,7 @@ export default function CriarCidade() {
   return (
     <div className="display">
       <div className="card animated fadeInDown">
-        <h2>Nova Cidade</h2>
+        <h2>Atualizar Cidade</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-2 mt-4">
             <label htmlFor="codCidade" className="app-label">
@@ -176,13 +196,9 @@ export default function CriarCidade() {
             <input
               id={CIDADE.FIELDS.CODIGO}
               name={CIDADE.FIELDS.CODIGO}
-              className={getInputClass(CIDADE.FIELDS.CODIGO)}
+              className={getInputClass()}
               value={model.codCidade}
-              onChange={(e) =>
-                handleChangeField(CIDADE.FIELDS.CODIGO, e.target.value)
-              }
-              onBlur={(e) => validateField(CIDADE.FIELDS.CODIGO, e)}
-              readOnly={false}
+              readOnly={true}
               disabled={false}
               autoComplete="off"
             />
@@ -202,13 +218,9 @@ export default function CriarCidade() {
             <input
               id={CIDADE.FIELDS.NOME}
               name={CIDADE.FIELDS.NOME}
-              className={getInputClass(CIDADE.FIELDS.NOME)}
+              className={getInputClass()}
               value={model.nomeCidade}
-              onChange={(e) =>
-                handleChangeField(CIDADE.FIELDS.NOME, e.target.value)
-              }
-              onBlur={(e) => validateField(CIDADE.FIELDS.NOME, e)}
-              readOnly={false}
+              readOnly={true}
               disabled={false}
               autoComplete="off"
             />
@@ -223,19 +235,19 @@ export default function CriarCidade() {
             <button
               id="submit"
               type="submit"
-              title={CIDADE.OPERACAO.CRIAR.ACAO}
-              className="btn btn-success"
+              title={CIDADE.OPERACAO.EXCLUIR.ACAO}
+              className="btn btn-edit"
             >
               <span className="btn-icon">
                 <i>{<FaSave />}</i>
               </span>
-              {BTN.SAVE}
+              {BTN.UPDATE}
             </button>
             <button
               className="btn btn-cancel"
               id="cancel"
               type="button"
-              title={CIDADE.OPERACAO.CRIAR.CANCELAR}
+              title={CIDADE.OPERACAO.EXCLUIR.CANCELAR}
               onClick={handleCancel}
             >
               <span className="btn-icon">

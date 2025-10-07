@@ -1,4 +1,5 @@
 import { criarMensagensOperacao } from "../../constants/criar.mensagem.operacao";
+import type { Cidade } from "../type/cidade";
 
 const ENTITY_NAME = "Cidade";
 
@@ -43,4 +44,17 @@ export const CIDADE = {
   OPERACAO: criarMensagensOperacao(ENTITY_NAME),
 };
 
-export const fieldsCidade = Object.values(CIDADE.FIELDS);
+export const fieldsCidade: (keyof Cidade)[] = [
+  CIDADE.FIELDS.ID,
+  CIDADE.FIELDS.CODIGO,
+  CIDADE.FIELDS.NOME,
+];
+
+export const mapaCampoParaMensagem: Record<
+  keyof Cidade,
+  keyof typeof CIDADE.INPUT_ERROR
+> = {
+  idCidade: "ID",
+  codCidade: "CODIGO",
+  nomeCidade: "NOME",
+};
