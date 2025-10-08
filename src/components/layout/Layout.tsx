@@ -1,12 +1,12 @@
 import { Link, Outlet } from "react-router-dom";
-import { ROTA } from "../../services/router/Url";
+import { DASHBOARD, ROTA } from "../../services/router/Url";
 import "./layout.css";
 
 export default function Layout() {
   return (
     <div id="defaultLayout">
       <aside>
-        <a href="#">Dashboard</a>
+        <Link to={DASHBOARD}>Dashboard</Link>
         <Link to={ROTA.CIDADE.LISTAR}>Cidades</Link>
       </aside>
       <div className="content">

@@ -146,7 +146,6 @@ export default function AtualizarCidade() {
     getCidade();
   }, [idCidade]);
 
-  console.log(errors);
   /**
    * Função para lidar com a mudança de valor nos campos do formulário.
    * @param name - O nome do campo da interface 'Cidade' que está sendo alterado.
