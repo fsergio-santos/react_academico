@@ -10,7 +10,7 @@ import {
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
-import { BTN } from "../../services/constants/constants.button.operacao";
+import { UI_CONFIG } from "../../services/constants/system.constants";
 import { ROTA } from "../../services/router/Url";
 
 /**
@@ -103,14 +103,10 @@ const buscarCidadePorId = async (
     if (response.data.dados) {
       cidade = response.data.dados;
       const errosValidacao = validarCamposVaziosCidade(response.data.dados);
-      //console.log(errosValidacao);
       if (errosValidacao) {
-        console.log("erros de valiodação ");
         errosCidade = setServerErrorsCidade(errosValidacao);
-        console.log(errosCidade);
       }
     }
-    console.log(cidade);
     return {
       cidade,
       errosCidade,
@@ -132,6 +128,7 @@ export default function AtualizarCidade() {
   const navigate = useNavigate();
   // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
   const { idCidade } = useParams();
+  
 
   // useEffect hook para atualizar o estado dos atributos da cidade
   // ou atualizar o estado de erros existente no cadastro da cidade.
@@ -365,7 +362,7 @@ export default function AtualizarCidade() {
               <span className="btn-icon">
                 <i>{<FaSave />}</i>
               </span>
-              {BTN.UPDATE}
+              {UI_CONFIG.BTN.UPDATE}
             </button>
             <button
               className="btn btn-cancel"
@@ -377,7 +374,7 @@ export default function AtualizarCidade() {
               <span className="btn-icon">
                 <i>{<MdCancel />}</i>
               </span>
-              {BTN.CANCEL}
+              {UI_CONFIG.BTN.CANCEL}
             </button>
           </div>
         </form>

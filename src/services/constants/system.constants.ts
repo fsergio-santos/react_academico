@@ -1,0 +1,46 @@
+// src/constants.ts ou src/config/constants.ts
+
+// --- Configurações da API e Servidor ---
+export const REST_CONFIG = {
+  BASE_URL: "http://localhost:8000/rest",
+  URL_IMAGEM: "http://localhost:8000/rest/foto/f/",
+  URL_IMAGEM_THUMBNAIL: "http://localhost:8000/rest/foto/f/thumbnail.",
+};
+
+// --- Configurações de UI e Comportamento ---
+export const UI_CONFIG = {
+  BUTTON_SIZE: 30,
+  BUTTON_SIZE_SHOW_MESSAGE: 30,
+  DEFAULT_USER_IMAGE: require("../../assets/img/user.png"), // É mais comum importar imagens assim
+  DEFAULT_THUMBNAIL_IMAGE: require("../../assets/img/thumbnail.avatar.png"),
+  TOAST_DURATION: 5000, // Nome mais descritivo que TIME
+  ARROW_UP: "\u25B2", // ▲
+  ARROW_DOWN: "\u25BC", // ▼
+  BTN: {
+    NEW: "Novo",
+    EDIT: "Atualizar",
+    DELETE: "Excluir",
+    CANCEL: "Cancelar",
+    SAVE: "Salvar",
+    QUERY: "Consultar",
+    UPDATE: "Salvar",
+  },
+};
+
+// --- Validações e Regras de Negócio ---
+export const VALIDATION_RULES = {
+  PASSWORD_MIN_LENGTH: 6,
+  EMAIL_REGEX:
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+};
+
+// --- Tipos de Status e Variantes (para alertas, botões, etc.) ---
+export const STATUS_TYPES = {
+  SUCCESS: "success",
+  DANGER: "danger",
+  INFO: "info",
+  WARNING: "warning",
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  UNDEFINED: "undefined",
+} as const;

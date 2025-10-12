@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   useState,
   type FocusEvent,
@@ -8,10 +7,17 @@ import {
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
+import { useAlert } from "../../contexto/AlertContexto";
+import { useApiCidade } from "../../services/cidade/api/api.cidade";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
-import { BTN } from "../../services/constants/constants.button.operacao";
+import {
+  STATUS_TYPES,
+  UI_CONFIG,
+} from "../../services/constants/system.constants";
+import { handleAxiosError } from "../../services/mensagens/error.sistema";
 import { ROTA } from "../../services/router/Url";
 
 export default function CriarCidade() {
@@ -23,6 +29,11 @@ export default function CriarCidade() {
   const [errors, setErrors] = useState<ErrosCidade>({});
   // hook para naveção entre páginas
   const navigate = useNavigate();
+  // chamando a Api de cidades para comunicação com o servidor
+  const { postCidade } = useApiCidade();
+  // chama a rotina para mostrar as mensagens de erro
+  // rotina para o carregamento da página
+  const { loading, setLoading, showAlert } = useAlert();
 
   /**
    * Função para lidar com a mudança de valor nos campos do formulário.
@@ -148,13 +159,21 @@ export default function CriarCidade() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (validarFormulario()) {
-      const response = await axios.post(
-        "http://localhost:8000/rest/sistema/cidade/criar",
-        model
-      );
-      console.log("Formulário válido. Enviando dados:", response);
-    } else {
+    setLoading(true);
+    if (!validarFormulario()) {
+      showAlert(CIDADE.OPERACAO.CRIAR.ERRO, STATUS_TYPES.DANGER);
+    }
+    try {
+      const response = await postCidade(model);
+      const { mensagem } = response.data;
+      if (mensagem) {
+        showAlert(mensagem, STATUS_TYPES.SUCCESS);
+      }
+    } catch (error) {
+      const mensagem = handleAxiosError(error);
+      showAlert(mensagem, STATUS_TYPES.DANGER);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,6 +184,7 @@ export default function CriarCidade() {
 
   return (
     <div className="display">
+      {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
         <h2>Nova Cidade</h2>
         <form onSubmit={handleSubmit}>
@@ -229,7 +249,7 @@ export default function CriarCidade() {
               <span className="btn-icon">
                 <i>{<FaSave />}</i>
               </span>
-              {BTN.SAVE}
+              {UI_CONFIG.BTN.SAVE}
             </button>
             <button
               className="btn btn-cancel"
@@ -241,7 +261,7 @@ export default function CriarCidade() {
               <span className="btn-icon">
                 <i>{<MdCancel />}</i>
               </span>
-              {BTN.CANCEL}
+              {UI_CONFIG.BTN.CANCEL}
             </button>
           </div>
         </form>

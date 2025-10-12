@@ -1,0 +1,124 @@
+
+.alert-message {
+  position:fixed;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-45%);
+  box-sizing: border-box;
+  z-index: 1000;
+  width:50%;
+  max-width: 90%;
+  padding: 3rem; 
+  
+  border-radius: 8px;
+  
+}
+@keyframes fadeIm-Ou {
+  0% {
+    transform: translateY(-200px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+.alert-message-container {
+  position: relative; 
+  max-width: 90%;
+  max-height: 90%;
+  margin: 1.75rem auto;
+  box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  pointer-events: auto; 
+}
+
+.alert-message-content {
+  /* position: relative; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  pointer-events: auto;
+  background-color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+
+.alert-message-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #dee3e6;
+  background-color: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.alert-success {
+  background-color: #cff6e4;
+  color: #000000;
+  padding-left: 4rem;
+}
+.alert-success::before {
+  font-family: "Font Awesome\ 6 Free";
+  font-weight: 900;
+  content: "\f058";
+  position: absolute;
+
+  left: 18px;
+  top: 10px;
+  font-size: 2rem;
+  color: #0f5132;
+}
+.alert-info {
+  background-color: #d5e5fd;
+  color: #052d68;
+  padding-left: 4rem;
+}
+
+.alert-info::before {
+  font-family: "Font Awesome\ 6 Free";
+  font-weight: 900;
+  content: "\f05a";
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  font-size: 2rem;
+  color: #084298;
+}
+.alert-caution {
+  background-color: #fef2d0;
+  color: #342802;
+  padding-left: 4rem;
+}
+
+.alert-caution::before {
+  font-family: "Font Awesome\ 6 Free";
+  font-weight: 900;
+  content: "\f071";
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  font-size: 2rem;
+  color: #664d03;
+}
+.alert-danger {
+  background-color: #f7dfe1;
+  color: #5b161c;
+  padding-left: 4rem;
+}
+
+.alert-danger::before {
+  font-family: "Font Awesome\ 6 Free";
+  font-weight: 900;
+  content: "\f057";
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  font-size: 2rem;
+  color: #842029;
+}

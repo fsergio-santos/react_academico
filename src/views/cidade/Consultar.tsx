@@ -9,7 +9,7 @@ import {
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
-import { BTN } from "../../services/constants/constants.button.operacao";
+import { UI_CONFIG } from "../../services/constants/system.constants";
 import { ROTA } from "../../services/router/Url";
 
 /**
@@ -227,7 +227,7 @@ export default function ConsultarCidade() {
               <span className="btn-icon">
                 <i>{<MdCancel />}</i>
               </span>
-              {BTN.CANCEL}
+              {UI_CONFIG.BTN.CANCEL}
             </button>
           </div>
         </form>

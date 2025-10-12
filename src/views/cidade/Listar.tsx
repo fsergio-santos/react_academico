@@ -2,26 +2,25 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Cidade } from "../../services/cidade/type/cidade";
-import { BTN } from "../../services/constants/constants.button.operacao";
+import { UI_CONFIG } from "../../services/constants/system.constants";
 import { ROTA } from "../../services/router/Url";
 
-
-const buscarTodasCidades = async ():Promise<Cidade[] | null> => {
-      // await axios
-      //   .get("http://localhost:8000/rest/sistema/cidade/listar")
-      //   .then((response: any) => {
-      //     setCidades(response.data.dados);
-      //   });
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/rest/sistema/cidade/listar"
-        );
-        return response.data.dados;
-      } catch (error: any) {
-        console.log(error);
-      }
-      return null;
-}
+const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
+  // await axios
+  //   .get("http://localhost:8000/rest/sistema/cidade/listar")
+  //   .then((response: any) => {
+  //     setCidades(response.data.dados);
+  //   });
+  try {
+    const response = await axios.get(
+      "http://localhost:8000/rest/sistema/cidade/listar"
+    );
+    return response.data.dados;
+  } catch (error: any) {
+    console.log(error);
+  }
+  return null;
+};
 
 export default function ListarCidades() {
   // useState = hook - gancho - função
@@ -34,13 +33,12 @@ export default function ListarCidades() {
   useEffect(() => {
     async function getCidades() {
       const cidades = await buscarTodasCidades();
-      if (cidades){
+      if (cidades) {
         setModels(cidades);
       }
     }
     getCidades();
   }, []);
-
 
   return (
     <div className="display">
@@ -55,7 +53,7 @@ export default function ListarCidades() {
         >
           <h2>Lista de Cidades</h2>
           <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add">
-            {BTN.NEW}
+            {UI_CONFIG.BTN.NEW}
           </Link>
         </div>
         <table>
@@ -78,7 +76,7 @@ export default function ListarCidades() {
                     to={`${ROTA.CIDADE.ATUALIZAR}/${model.idCidade}`}
                     className="btn btn-edit"
                   >
-                    {BTN.EDIT}
+                    {UI_CONFIG.BTN.EDIT}
                   </Link>
                 </td>
                 <td className="center actions">
@@ -86,7 +84,7 @@ export default function ListarCidades() {
                     to={`${ROTA.CIDADE.EXCLUIR}/${model.idCidade}`}
                     className="btn btn-delete"
                   >
-                    {BTN.DELETE}
+                    {UI_CONFIG.BTN.DELETE}
                   </Link>
                 </td>
                 <td className="center actions">
@@ -94,7 +92,7 @@ export default function ListarCidades() {
                     to={`${ROTA.CIDADE.POR_ID}/${model.idCidade}`}
                     className="btn btn-info"
                   >
-                    {BTN.QUERY}
+                    {UI_CONFIG.BTN.QUERY}
                   </Link>
                 </td>
               </tr>

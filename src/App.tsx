@@ -1,12 +1,15 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { routes } from './services/router/Routes';
+import AlertProvider from "./contexto/AlertContexto";
+import { routes } from "./services/router/Routes";
 
 const router = createBrowserRouter(routes);
 
 function App() {
   return (
     <div>
-      <RouterProvider router={router} />
+      <AlertProvider>
+        <RouterProvider router={router} />
+      </AlertProvider>
     </div>
   );
 }
