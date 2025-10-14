@@ -1,4 +1,4 @@
-
+/* 
 .alert-message {
   position:fixed;
   top: 110px;
@@ -13,6 +13,7 @@
   border-radius: 8px;
   
 }
+
 @keyframes fadeIm-Ou {
   0% {
     transform: translateY(-200px);
@@ -23,6 +24,7 @@
     opacity: 1;
   }
 }
+
 .alert-message-container {
   position: relative; 
   max-width: 90%;
@@ -34,7 +36,7 @@
 }
 
 .alert-message-content {
-  /* position: relative; */
+  /* position: relative; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -58,11 +60,13 @@
   font-weight: 700;
 }
 
+
 .alert-success {
   background-color: #cff6e4;
   color: #000000;
   padding-left: 4rem;
 }
+
 .alert-success::before {
   font-family: "Font Awesome\ 6 Free";
   font-weight: 900;
@@ -121,4 +125,197 @@
   top: 10px;
   font-size: 2rem;
   color: #842029;
+}
+ */
+
+.alert-message {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-45%);
+  box-sizing: border-box;
+  z-index: 1000;
+  width: 50%;
+  max-width: 90%;
+  padding: 3rem;
+  border-radius: 8px;
+}
+
+@keyframes fadeIm-Ou {
+  0% {
+    transform: translateY(-200px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.alert-message-container {
+  position: relative;
+  max-width: 90%;
+  max-height: 100%;
+  margin: 1.75rem auto;
+  box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  pointer-events: auto;
+}
+
+.alert-message-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  pointer-events: auto;
+  background-color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+
+.alert-message-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #dee3e6;
+  background-color: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* --- ÍCONES CUSTOMIZADOS EM CSS --- */
+
+/* Base comum para todos os pseudo-elementos dos ícones */
+.alert-success::before,
+.alert-success::after,
+.alert-info::before,
+.alert-caution::before,
+.alert-caution::after,
+.alert-danger::before {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  font-size: 2rem; /* Mantém o tamanho original do ícone */
+}
+
+/* --- Sucesso (Check-circle) --- */
+.alert-success {
+  background-color: #cff6e4;
+  color: #000000;
+  padding-left: 4rem;
+}
+
+/* Círculo */
+.alert-success::before {
+  left: 18px;
+  top: 10px;
+  width: 1em; /* 1em = 2rem (devido ao font-size) */
+  height: 1em;
+  border: 0.1em solid #0f5132;
+  border-radius: 50%;
+}
+
+/* Símbolo de "check" */
+.alert-success::after {
+  left: calc(18px + 0.25em);
+  top: calc(10px + 0.4em);
+  width: 0.5em;
+  height: 0.25em;
+  border-left: 0.12em solid #0f5132;
+  border-bottom: 0.12em solid #0f5132;
+  transform: rotate(-45deg);
+}
+
+/* --- Informação (Info-circle) --- */
+.alert-info {
+  background-color: #d5e5fd;
+  color: #052d68;
+  padding-left: 4rem;
+}
+
+/* Círculo com a letra "i" */
+.alert-info::before {
+  content: "i";
+  left: 18px;
+  top: 10px;
+  width: 1em;
+  height: 1em;
+  border: 0.1em solid #084298;
+  border-radius: 50%;
+  color: #084298;
+  text-align: center;
+  font-family: "Georgia", serif;
+  font-weight: bold;
+  font-style: italic;
+  line-height: 0.8em; /* Ajusta o "i" verticalmente */
+}
+
+/* --- Cautela (Exclamation-triangle) --- */
+.alert-caution {
+  background-color: #fef2d0;
+  color: #342802;
+  padding-left: 4rem;
+}
+
+/* Triângulo */
+.alert-caution::before {
+  left: 18px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-bottom: 0.9em solid #664d03;
+}
+
+/* Ponto de exclamação */
+.alert-caution::after {
+  content: "!";
+  position: absolute;
+  left: 18px;
+  top: calc(10px + 0.15em);
+  width: 1em;
+  color: #342802;
+  text-align: center;
+  font-weight: bold;
+  font-family: "Arial", sans-serif;
+  font-size: 2rem;
+}
+
+/* --- Perigo (Times-circle) --- */
+.alert-danger {
+  background-color: #f7dfe1;
+  color: #5b161c;
+  padding-left: 4rem;
+}
+
+/* Círculo com "X" (feito com gradientes) */
+.alert-danger::before {
+  left: 18px;
+  top: 10px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: 0.1em solid #842029;
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 45%,
+      #842029 45%,
+      #842029 55%,
+      transparent 55%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 45%,
+      #842029 45%,
+      #842029 55%,
+      transparent 55%
+    );
+  background-size: 70% 70%;
+  background-repeat: no-repeat;
+  background-position: center;
 }

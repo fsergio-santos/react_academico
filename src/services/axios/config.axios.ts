@@ -41,9 +41,9 @@ http.interceptors.response.use(
     >;
     const msg = payload.mensagem ?? handleAxiosError(status);
     const path = payload.path ?? error.config?.url ?? "desconhecido";
-    const metodo =
-      payload.metodo ?? error.config?.method?.toUpperCase() ?? "GET";
-    const dedupKey = `${status}|${metodo}|${path}`;
+    //const metodo =
+    //  payload.metodo ?? error.config?.method?.toUpperCase() ?? "GET";
+    const dedupKey = `${status}|${path}`;
     const now = Date.now();
 
     if (error.config?.silent && !dedupStore.hasRecent(dedupKey, 3000)) {
@@ -55,12 +55,12 @@ http.interceptors.response.use(
       });
     }
 
-    const normalizado: MensagemServidor<null> = {
+    const normalizado: MensagemServidor<unknown> = {
       status,
       mensagem: msg,
-      dados: null,
+      dados: payload.dados ?? null,
       path: payload.path ?? error.config?.url,
-      metodo: payload.metodo ?? error.config?.method?.toUpperCase(),
+      //metodo: payload.metodo ?? error.config?.method?.toUpperCase(),
       data: payload.data ?? new Date().toISOString(),
     };
 

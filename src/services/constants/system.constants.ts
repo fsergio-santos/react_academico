@@ -1,5 +1,8 @@
 // src/constants.ts ou src/config/constants.ts
 
+import THUMBNAIL_IMAGE from "../../assets/img/thumbnail.avatar.png";
+import USER_IMAGE from "../../assets/img/user.png";
+
 // --- Configurações da API e Servidor ---
 export const REST_CONFIG = {
   BASE_URL: "http://localhost:8000/rest",
@@ -11,8 +14,8 @@ export const REST_CONFIG = {
 export const UI_CONFIG = {
   BUTTON_SIZE: 30,
   BUTTON_SIZE_SHOW_MESSAGE: 30,
-  DEFAULT_USER_IMAGE: require("../../assets/img/user.png"), // É mais comum importar imagens assim
-  DEFAULT_THUMBNAIL_IMAGE: require("../../assets/img/thumbnail.avatar.png"),
+  DEFAULT_USER_IMAGE: USER_IMAGE, // É mais comum importar imagens assim
+  DEFAULT_THUMBNAIL_IMAGE: THUMBNAIL_IMAGE,
   TOAST_DURATION: 5000, // Nome mais descritivo que TIME
   ARROW_UP: "\u25B2", // ▲
   ARROW_DOWN: "\u25BC", // ▼

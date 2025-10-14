@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import type { Cidade } from "../../services/cidade/type/cidade";
 import { UI_CONFIG } from "../../services/constants/system.constants";
@@ -53,6 +55,9 @@ export default function ListarCidades() {
         >
           <h2>Lista de Cidades</h2>
           <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add">
+            <span className="btn-icon">
+              <i>{<FaPlus />}</i>
+            </span>
             {UI_CONFIG.BTN.NEW}
           </Link>
         </div>
@@ -74,24 +79,32 @@ export default function ListarCidades() {
                 <td className="center actions">
                   <Link
                     to={`${ROTA.CIDADE.ATUALIZAR}/${model.idCidade}`}
-                    className="btn btn-edit"
+                    className="btn btn-edit ml-2"
                   >
+                    <span className="btn-icon">
+                      <i>{<FaPencilAlt />}</i>
+                    </span>
                     {UI_CONFIG.BTN.EDIT}
                   </Link>
-                </td>
-                <td className="center actions">
+
                   <Link
                     to={`${ROTA.CIDADE.EXCLUIR}/${model.idCidade}`}
-                    className="btn btn-delete"
+                    className="btn btn-delete ml-2"
                   >
+                    <span className="btn-icon">
+                      <i>{<FaTrashAlt />}</i>
+                    </span>
                     {UI_CONFIG.BTN.DELETE}
                   </Link>
-                </td>
-                <td className="center actions">
+
                   <Link
                     to={`${ROTA.CIDADE.POR_ID}/${model.idCidade}`}
-                    className="btn btn-info"
+                    className="btn btn-info ml-2 mr-2"
                   >
+                    {" "}
+                    <span className="btn-icon">
+                      <i>{<FaMagnifyingGlass />}</i>
+                    </span>
                     {UI_CONFIG.BTN.QUERY}
                   </Link>
                 </td>

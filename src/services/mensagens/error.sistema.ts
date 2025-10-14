@@ -1,35 +1,62 @@
-import axios, { AxiosError } from 'axios';
-import { MESSAGES } from './mensagens';
+import axios, { AxiosError } from "axios";
 
 interface ApiErrorResponse {
   mensagem?: string;
 }
 
+export const MESSAGES = {
+  // Mensagens por Status HTTP
+  200: "Requisição bem-sucedida!",
+  201: "Recurso criado com sucesso!",
+  204: "Nenhum conteúdo para retornar.",
+  400: "Requisição inválida. Verifique os dados enviados.",
+  401: "Você não tem autorização para acessar este recurso.",
+  404: "O recurso solicitado não foi encontrado.",
+  406: "O formato da requisição não é aceitável.",
+  412: "A pré-condição para esta requisição falhou.",
+  422: "Erro de validação nos campos enviados.",
+  500: "Ocorreu um erro interno no servidor. Tente novamente mais tarde.",
+
+  // Mensagens por Código de Erro do Axios
+  ECONNABORTED: "A requisição demorou muito e foi cancelada (timeout).",
+  ERR_NETWORK: "Erro de rede. Verifique sua conexão com a internet.",
+  ERR_CANCEL: "A requisição foi cancelada pelo aplicativo.",
+  ERR_CONNECTION_REFUSED: "Não foi possível conectar ao servidor.",
+
+  // Mensagem Padrão/Fallback
+  DEFAULT: "Ocorreu um erro inesperado.",
+} as const;
+
 export const handleAxiosError = (error: unknown): string => {
-  // Primeiro, garantimos que o erro é do tipo AxiosError
+  // Se não for um erro Axios, trata como erro genérico do sistema
   if (!axios.isAxiosError(error)) {
-    // Se não for, pode ser um erro de lógica no código, etc.
+    if (error instanceof Error) {
+      console.error("Erro do sistema:", error.message);
+      return error.message || MESSAGES.DEFAULT;
+    }
+    console.error("Erro desconhecido:", error);
     return MESSAGES.DEFAULT;
   }
 
-  // 1. Tenta obter a mensagem específica do backend
-  const apiError = error.response?.data as ApiErrorResponse;
+  const axiosError = error as AxiosError<ApiErrorResponse>;
+
+  // Mensagem específica enviada pelo backend (ex: { mensagem: "Usuário não encontrado" })
+  const apiError = axiosError.response?.data;
   if (apiError?.mensagem) {
     return apiError.mensagem;
   }
 
-  // 2. Tenta obter a mensagem pelo código de erro específico do Axios
-  if (error.code && error.code in MESSAGES) {
-    // TypeScript precisa de uma asserção de tipo aqui
-    return MESSAGES[error.code as keyof typeof MESSAGES];
+  // Código de erro Axios (como ERR_NETWORK, ECONNABORTED, etc.)
+  if (axiosError.code && axiosError.code in MESSAGES) {
+    return MESSAGES[axiosError.code as keyof typeof MESSAGES];
   }
 
-  // 3. Tenta obter a mensagem pelo status HTTP
-  if (error.response?.status && error.response.status in MESSAGES) {
-    // TypeScript precisa de uma asserção de tipo aqui
-    return MESSAGES[error.response.status as keyof typeof MESSAGES];
+  // Status HTTP (como 404, 500, etc.)
+  const status = axiosError.response?.status;
+  if (status && status in MESSAGES) {
+    return MESSAGES[status as keyof typeof MESSAGES];
   }
 
-  // 4. Se nada funcionar, retorna a mensagem padrão
+  // Caso não caia em nenhum dos anteriores
   return MESSAGES.DEFAULT;
 };

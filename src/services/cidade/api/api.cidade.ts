@@ -5,54 +5,62 @@ import { ROTA } from "../../router/Url";
 import type { MensagemServidor } from "../../types/mensage.servidor";
 import type { Cidade } from "../type/cidade";
 
+export const apiGetCidades = async (): Promise<
+  AxiosResponse<MensagemServidor<Cidade[]>>
+> => {
+  const response = await http.get<MensagemServidor<Cidade[]>>(
+    ROTA.CIDADE.LISTAR
+  );
+  return response;
+};
+
+export const apiGetCidade = async (
+  id: string | number
+): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
+  const response = await http.get<MensagemServidor<Cidade>>(
+    `${ROTA.CIDADE.POR_ID}/${id}`
+  );
+  return response;
+};
+
+export const apiPostCidade = async (
+  cidade: Cidade
+): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
+  const response = await http.post<MensagemServidor<Cidade>>(
+    ROTA.CIDADE.CRIAR,
+    cidade
+  );
+  return response;
+};
+
+export const apiPutCidade = async (
+  id: string | number,
+  cidade: Cidade
+): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
+  const response = await http.put<MensagemServidor<Cidade>>(
+    `${ROTA.CIDADE.ATUALIZAR}/${id}`,
+    cidade
+  );
+  return response;
+};
+
+export const apiDeleteCidade = async (
+  id: string | number
+): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
+  const response = await http.delete<MensagemServidor<Cidade>>(
+    `${ROTA.CIDADE.EXCLUIR}/${id}`
+  );
+  return response;
+};
+
+// hooks/useApiCidade.ts
+
 export const useApiCidade = () => {
-  const getCidades = useCallback(async (): Promise<
-    AxiosResponse<MensagemServidor<Cidade[]>>
-  > => {
-    const response = await http.get<MensagemServidor<Cidade[]>>(
-      ROTA.CIDADE.LISTAR
-    );
-    return response;
-  }, []);
-
-  const getCidade = async (
-    id: string | number
-  ): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
-    const response = await http.get<MensagemServidor<Cidade>>(
-      `${ROTA.CIDADE.POR_ID}/${id}`
-    );
-    return response;
-  };
-
-  const postCidade = async (
-    body: Cidade
-  ): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
-    const response = await http.post<MensagemServidor<Cidade>>(
-      ROTA.CIDADE.CRIAR,
-      body
-    );
-    return response;
-  };
-
-  const putCidade = async (
-    id: string | number,
-    body: Cidade
-  ): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
-    const response = await http.put<MensagemServidor<Cidade>>(
-      `${ROTA.CIDADE.ATUALIZAR}/${id}`,
-      body
-    );
-    return response;
-  };
-
-  const deleteCidade = async (
-    id: string | number
-  ): Promise<AxiosResponse<MensagemServidor<Cidade>>> => {
-    const response = await http.delete<MensagemServidor<Cidade>>(
-      `${ROTA.CIDADE.EXCLUIR}/${id}`
-    );
-    return response;
-  };
+  const getCidades = useCallback(apiGetCidades, []);
+  const getCidade = useCallback(apiGetCidade, []);
+  const postCidade = useCallback(apiPostCidade, []);
+  const putCidade = useCallback(apiPutCidade, []);
+  const deleteCidade = useCallback(apiDeleteCidade, []);
 
   return {
     getCidades,
@@ -62,23 +70,3 @@ export const useApiCidade = () => {
     deleteCidade,
   };
 };
-
-export const useApiAuth = <T>() => {
-  const getProfile = async (
-    url: string
-  ): Promise<AxiosResponse<MensagemServidor<T>>> => {
-    const response = await http.get<MensagemServidor<T>>(url);
-    return response;
-  };
-
-  const postLogout = async (url: string): Promise<AxiosResponse<void>> => {
-    const response = await http.post(url);
-    return response;
-  };
-
-  return {
-    getProfile,
-    postLogout,
-  };
-};
-

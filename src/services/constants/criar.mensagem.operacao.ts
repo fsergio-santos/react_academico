@@ -8,6 +8,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       ERRO: `Falha na criação do cadastro de ${ENTITY_NAME} no sistema`,
       EXISTE: `${ENTITY_NAME} já está cadastrado no sistema`,
       CANCELAR: `Cancelar a criação do cadastro de ${ENTITY_NAME} no sistema`,
+      FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     ATUALIZAR: {
       ACAO: `Atualizar o cadastro de ${ENTITY_NAME} no sistema`,
@@ -15,6 +16,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       ERRO: `Falha na atualização do cadastro de ${ENTITY_NAME} no sistema`,
       NAO_LOCALIZADO: `O código informado do cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
       CANCELAR: `Cancelar a atualização do cadastro de ${ENTITY_NAME} no sistema`,
+      FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     POR_ID: {
       ACAO: `Mostrar o cadastro de ${ENTITY_NAME} por um identificador único no sistema`,
@@ -22,6 +24,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       ERRO: `O cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
       NAO_LOCALIZADO: `O código informado do cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
       CANCELAR: `Cancelar a consulta do cadastro de ${ENTITY_NAME} no sistema`,
+      FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     EXCLUIR: {
       ACAO: `Excluir o cadastro de ${ENTITY_NAME} por um identificador único no sistema`,
@@ -29,6 +32,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       ERRO: `Falha na exclusão do cadastro de ${ENTITY_NAME} no sistema`,
       NAO_LOCALIZADO: `O código informado do cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
       CANCELAR: `Cancelar a exclusão do cadastro de ${ENTITY_NAME} no sistema`,
+      FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     LISTAR: {
       ACAO: `Listagem dos cadastros de ${ENTITY_NAME}s existentes no sistema`,

@@ -1,16 +1,25 @@
-import axios from "axios";
 import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
+import { useAlert } from "../../contexto/AlertContexto";
+import {
+  apiGetCidade,
+  useApiCidade,
+} from "../../services/cidade/api/api.cidade";
 import {
   CIDADE,
   fieldsCidade,
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
-import { UI_CONFIG } from "../../services/constants/system.constants";
+import {
+  STATUS_TYPES,
+  UI_CONFIG,
+} from "../../services/constants/system.constants";
+import { handleAxiosError } from "../../services/mensagens/error.sistema";
 import { ROTA } from "../../services/router/Url";
 
 /**
@@ -19,7 +28,7 @@ import { ROTA } from "../../services/router/Url";
  **/
 
 const setServerErrorsCidade = (
-  serverErrors: Partial<Record<keyof Cidade, string>> | null
+  serverErrors: Partial<Record<keyof Cidade, string[]>> | null
 ): ErrosCidade | null => {
   if (!serverErrors) {
     return null;
@@ -27,25 +36,18 @@ const setServerErrorsCidade = (
 
   const newErrors: ErrosCidade = {};
 
-  // Campo: idCidade
-  newErrors.idCidade = !!serverErrors.idCidade;
-  newErrors.idCidadeMensagem = serverErrors.idCidade
-    ? [serverErrors.idCidade]
-    : undefined;
+  (Object.keys(serverErrors) as (keyof Cidade)[]).forEach((campo) => {
+    const mensagens = serverErrors[campo];
 
-  // Campo: codCidade
-  newErrors.codCidade = !!serverErrors.codCidade;
-  newErrors.codCidadeMensagem = serverErrors.codCidade
-    ? [serverErrors.codCidade]
-    : undefined;
+    if (mensagens && mensagens.length > 0) {
+      newErrors[campo] = true;
 
-  // Campo: nomeCidade
-  newErrors.nomeCidade = !!serverErrors.nomeCidade;
-  newErrors.nomeCidadeMensagem = serverErrors.nomeCidade
-    ? [serverErrors.nomeCidade]
-    : undefined;
+      const msgKey = `${String(campo)}Mensagem`;
+      (newErrors as any)[msgKey] = [mensagens];
+    }
+  });
 
-  return newErrors;
+  return Object.keys(newErrors).length > 0 ? newErrors : null;
 };
 
 /**
@@ -56,8 +58,8 @@ const setServerErrorsCidade = (
 
 const validarCamposVaziosCidade = (
   cidade: Cidade
-): Partial<Record<keyof Cidade, string>> | null => {
-  const erros: Partial<Record<keyof Cidade, string>> = {};
+): Partial<Record<keyof Cidade, string[]>> | null => {
+  const erros: Partial<Record<keyof Cidade, string[]>> = {};
 
   fieldsCidade.forEach((field) => {
     const valor = cidade[field];
@@ -70,7 +72,9 @@ const validarCamposVaziosCidade = (
     if (isEmpty) {
       const keyMessage = mapaCampoParaMensagem[field];
       const mensagemErro = CIDADE.INPUT_ERROR[keyMessage]?.BLANK;
-      erros[field] = mensagemErro ?? `O campo ${String(field)} é obrigatório`;
+      const mensagem = mensagemErro ?? `O campo ${String(field)} é obrigatório`;
+
+      erros[field] = [mensagem];
     }
   });
 
@@ -95,11 +99,11 @@ const buscarCidadePorId = async (
 ): Promise<BuscarCidadePorIdProps | null> => {
   let cidade: Cidade | null = null;
   let errosCidade: ErrosCidade | null = null;
-
   try {
-    const response = await axios.get(
-      `http://localhost:8000/rest/sistema/cidade/buscar/${idCidade}`
-    );
+    const response = await apiGetCidade(idCidade);
+    // const response = await axios.get(
+    //   `http://localhost:8000/rest/sistema/cidade/buscar/${idCidade}`
+    // );
     if (response.data.dados) {
       cidade = response.data.dados;
       const errosValidacao = validarCamposVaziosCidade(response.data.dados);
@@ -127,18 +131,26 @@ export default function AtualizarCidade() {
   // hook para naveção entre páginas
   const navigate = useNavigate();
   // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
-  const { idCidade } = useParams();
-  
+  const { idCidade } = useParams<{ idCidade: string }>();
+  // hook de mensagens do sistema
+  const { loading, setLoading, showAlert } = useAlert();
+  // hoook para manutenção do registro de cidade.
+  const { putCidade } = useApiCidade();
 
   // useEffect hook para atualizar o estado dos atributos da cidade
   // ou atualizar o estado de erros existente no cadastro da cidade.
   useEffect(() => {
+    setLoading(true);
     async function getCidade() {
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
-        setModel(response.cidade);
         setErrors(response?.errosCidade ?? null);
+        setModel(response.cidade);
+        if (response?.errosCidade) {
+          showAlert(CIDADE.OPERACAO.POR_ID.FIELDS, STATUS_TYPES.DANGER);
+        }
       }
+      setLoading(false);
     }
     getCidade();
   }, [idCidade]);
@@ -279,15 +291,37 @@ export default function AtualizarCidade() {
    */
 
   const handleSubmit = async (e: FormEvent) => {
+    let errosCidade: ErrosCidade | null = null;
     e.preventDefault();
-    if (validarFormulario()) {
-      const response = await axios.put(
-        `http://localhost:8000/rest/sistema/cidade/alterar/${idCidade}`,
-        model
-      );
-      console.log("Formulário válido. Enviando dados:", response);
-    } else {
-      console.log("Formulário inválido. Verifique os erros.");
+    if (!idCidade || !model) {
+      showAlert(CIDADE.OPERACAO.POR_ID.NAO_LOCALIZADO, STATUS_TYPES.DANGER);
+      navigate(ROTA.CIDADE.LISTAR);
+      return;
+    }
+    //if (!validarFormulario()) {
+    //  showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
+    //}
+    setLoading(true);
+    try {
+      const response = await putCidade(idCidade, model);
+      console.log(response);
+      const { mensagem } = response.data;
+      if (mensagem) {
+        showAlert(mensagem, STATUS_TYPES.SUCCESS);
+      }
+      navigate(ROTA.CIDADE.LISTAR);
+    } catch (error: any) {
+      console.log(error.dados);
+
+      const errosValidacao = validarCamposVaziosCidade(error.dados);
+      if (errosValidacao) {
+        errosCidade = setServerErrorsCidade(errosValidacao);
+      }
+      setErrors(errosCidade);
+      const mensagem = handleAxiosError(error);
+      showAlert(mensagem, STATUS_TYPES.DANGER);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -298,14 +332,17 @@ export default function AtualizarCidade() {
 
   return (
     <div className="display">
+      {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
         <h2>Atualizar Cidade</h2>
+        <div className="custom-divider"></div>
         <form onSubmit={handleSubmit}>
-          <div className="mb-2 mt-4">
+          <div className="mb-2 mt-2">
             <label htmlFor="codCidade" className="app-label">
-              Código
+              Código:
             </label>
-
+          </div>
+          <div className="input-group">
             <input
               id={CIDADE.FIELDS.CODIGO}
               name={CIDADE.FIELDS.CODIGO}
@@ -331,7 +368,8 @@ export default function AtualizarCidade() {
             <label htmlFor="nomeCidade" className="app-label">
               Nome:
             </label>
-
+          </div>
+          <div className="input-group">
             <input
               id={CIDADE.FIELDS.NOME}
               name={CIDADE.FIELDS.NOME}

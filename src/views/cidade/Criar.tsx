@@ -169,6 +169,7 @@ export default function CriarCidade() {
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
+      navigate(ROTA.CIDADE.LISTAR);
     } catch (error) {
       const mensagem = handleAxiosError(error);
       showAlert(mensagem, STATUS_TYPES.DANGER);
@@ -187,12 +188,14 @@ export default function CriarCidade() {
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
         <h2>Nova Cidade</h2>
+        <div className="custom-divider"></div>
         <form onSubmit={handleSubmit}>
-          <div className="mb-2 mt-4">
+          <div className="mb-1 mt-2">
             <label htmlFor="codCidade" className="app-label">
-              Código
+              Código:
             </label>
-
+          </div>
+          <div className="input-group">
             <input
               id={CIDADE.FIELDS.CODIGO}
               name={CIDADE.FIELDS.CODIGO}
@@ -214,11 +217,12 @@ export default function CriarCidade() {
             )}
           </div>
 
-          <div className="mb-2 mt-4">
+          <div className="mb-1 mt-4">
             <label htmlFor="nomeCidade" className="app-label">
               Nome:
             </label>
-
+          </div>
+          <div className="input-group">
             <input
               id={CIDADE.FIELDS.NOME}
               name={CIDADE.FIELDS.NOME}

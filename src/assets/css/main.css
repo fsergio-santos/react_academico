@@ -72,7 +72,9 @@
 
 html,
 body,
-#root {
+#root,
+#defaultLayout,
+#guestLayout {
   min-height: 100vh;
 }
 
@@ -126,7 +128,7 @@ h1 {
 .form-control,
 .form-select {
   outline: 0;
-  width: 100%;
+  width: 80%;
   padding: 0.75rem 0.375rem;
   padding-right: 2.8125rem; /* 45px / 16px /*;
   box-sizing: border-box;
@@ -368,10 +370,10 @@ h1 {
 
 /*   definição css para o botão  geral */
 .btn {
-  display: inline-flex; /* ← muda aqui */
-  align-items: center; /* ← centraliza verticalmente */
-  justify-content: center; /* ← centraliza horizontalmente (para ícone único) */
-  gap: 0.5rem; /* ← espaçamento entre ícone e texto */
+  display: inline-flex; /*  muda aqui */
+  align-items: center; /*  centraliza verticalmente */
+  justify-content: center; /*     centraliza horizontalmente (para ícone único) */
+  gap: 0.5rem; /*     espaçamento entre ícone e texto */
 
   padding: 0.75rem 0.375rem;
   font-family: "Open Sans", sans-serif;
@@ -840,61 +842,61 @@ h1 {
 
 /*  margin direita */
 
-.me-0 {
+.mr-0 {
   margin-right: 0 !important;
 }
 
-.me-1 {
+.mr-1 {
   margin-right: 0.25rem !important;
 }
 
-.me-2 {
+.mr-2 {
   margin-right: 0.5rem !important;
 }
 
-.me-3 {
+.mr-3 {
   margin-right: 1rem !important;
 }
 
-.me-4 {
+.mr-4 {
   margin-right: 1.5rem !important;
 }
 
-.me-5 {
+.mr-5 {
   margin-right: 3rem !important;
 }
 
-.me-auto {
+.mr-auto {
   margin-right: auto !important;
 }
 
 /* margin esquerda */
 
-.ms-0 {
+.ml-0 {
   margin-left: 0 !important;
 }
 
-.ms-1 {
+.ml-1 {
   margin-left: 0.25rem !important;
 }
 
-.ms-2 {
+.ml-2 {
   margin-left: 0.5rem !important;
 }
 
-.ms-3 {
+.ml-3 {
   margin-left: 1rem !important;
 }
 
-.ms-4 {
+.ml-4 {
   margin-left: 1.5rem !important;
 }
 
-.ms-5 {
+.ml-5 {
   margin-left: 3rem !important;
 }
 
-.ms-auto {
+.ml-auto {
   margin-left: auto !important;
 }
 
@@ -1344,4 +1346,11 @@ h1 {
   .card-group > .card:not(:first-child) > .card-footer {
     border-bottom-left-radius: 0;
   }
+}
+
+.custom-divider {
+  border: 0;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 24px 0;
 }
