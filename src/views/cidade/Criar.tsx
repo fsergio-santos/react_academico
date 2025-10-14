@@ -187,12 +187,12 @@ export default function CriarCidade() {
     <div className="display">
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <h2>Nova Cidade</h2>
+        <h2>{CIDADE.TITULO.CRIAR}</h2>
         <div className="custom-divider"></div>
         <form onSubmit={handleSubmit}>
           <div className="mb-1 mt-2">
             <label htmlFor="codCidade" className="app-label">
-              Código:
+              {CIDADE.LABEL.CODIGO_CIDADE}:
             </label>
           </div>
           <div className="input-group">
@@ -219,7 +219,7 @@ export default function CriarCidade() {
 
           <div className="mb-1 mt-4">
             <label htmlFor="nomeCidade" className="app-label">
-              Nome:
+              {CIDADE.LABEL.NOME_CIDADE}:
             </label>
           </div>
           <div className="input-group">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade } from "../../services/cidade/type/cidade";
 import { UI_CONFIG } from "../../services/constants/system.constants";
 import { ROTA } from "../../services/router/Url";
@@ -53,7 +54,7 @@ export default function ListarCidades() {
             marginBottom: "15px",
           }}
         >
-          <h2>Lista de Cidades</h2>
+          <h2>{CIDADE.TITULO.LISTA}</h2>
           <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add">
             <span className="btn-icon">
               <i>{<FaPlus />}</i>
@@ -64,8 +65,8 @@ export default function ListarCidades() {
         <table>
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nome</th>
+              <th>{CIDADE.LABEL.CODIGO_CIDADE}</th>
+              <th>{CIDADE.LABEL.NOME_CIDADE}</th>
               <th className="center actions" colSpan={3}>
                 Ação
               </th>

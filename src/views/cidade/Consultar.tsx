@@ -1,15 +1,22 @@
-import axios from "axios";
 import { useEffect, useState, type MouseEvent } from "react";
 import { MdCancel } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
+import { useAlert } from "../../contexto/AlertContexto";
+import { AlertBus } from "../../services/alert/alert.service";
+import { apiGetCidade } from "../../services/cidade/api/api.cidade";
 import {
   CIDADE,
   fieldsCidade,
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
-import { UI_CONFIG } from "../../services/constants/system.constants";
+import {
+  STATUS_TYPES,
+  UI_CONFIG,
+} from "../../services/constants/system.constants";
+import { handleAxiosError } from "../../services/mensagens/error.sistema";
 import { ROTA } from "../../services/router/Url";
 
 /**
@@ -18,7 +25,7 @@ import { ROTA } from "../../services/router/Url";
  **/
 
 const setServerErrorsCidade = (
-  serverErrors: Partial<Record<keyof Cidade, string>> | null
+  serverErrors: Partial<Record<keyof Cidade, string[]>> | null
 ): ErrosCidade | null => {
   if (!serverErrors) {
     return null;
@@ -26,27 +33,19 @@ const setServerErrorsCidade = (
 
   const newErrors: ErrosCidade = {};
 
-  // Campo: idCidade
-  newErrors.idCidade = !!serverErrors.idCidade;
-  newErrors.idCidadeMensagem = serverErrors.idCidade
-    ? [serverErrors.idCidade]
-    : undefined;
+  (Object.keys(serverErrors) as (keyof Cidade)[]).forEach((campo) => {
+    const mensagens = serverErrors[campo];
 
-  // Campo: codCidade
-  newErrors.codCidade = !!serverErrors.codCidade;
-  newErrors.codCidadeMensagem = serverErrors.codCidade
-    ? [serverErrors.codCidade]
-    : undefined;
+    if (mensagens && mensagens.length > 0) {
+      newErrors[campo] = true;
 
-  // Campo: nomeCidade
-  newErrors.nomeCidade = !!serverErrors.nomeCidade;
-  newErrors.nomeCidadeMensagem = serverErrors.nomeCidade
-    ? [serverErrors.nomeCidade]
-    : undefined;
+      const msgKey = `${String(campo)}Mensagem`;
+      (newErrors as any)[msgKey] = [mensagens];
+    }
+  });
 
-  return newErrors;
+  return Object.keys(newErrors).length > 0 ? newErrors : null;
 };
-
 /**
  * função para validar os campos vázios
  * que retornaram do servidor em uma consulta
@@ -55,8 +54,8 @@ const setServerErrorsCidade = (
 
 const validarCamposVaziosCidade = (
   cidade: Cidade
-): Partial<Record<keyof Cidade, string>> | null => {
-  const erros: Partial<Record<keyof Cidade, string>> = {};
+): Partial<Record<keyof Cidade, string[]>> | null => {
+  const erros: Partial<Record<keyof Cidade, string[]>> = {};
 
   fieldsCidade.forEach((field) => {
     const valor = cidade[field];
@@ -69,13 +68,14 @@ const validarCamposVaziosCidade = (
     if (isEmpty) {
       const keyMessage = mapaCampoParaMensagem[field];
       const mensagemErro = CIDADE.INPUT_ERROR[keyMessage]?.BLANK;
-      erros[field] = mensagemErro ?? `O campo ${String(field)} é obrigatório`;
+      const mensagem = mensagemErro ?? `O campo ${String(field)} é obrigatório`;
+
+      erros[field] = [mensagem];
     }
   });
 
   return Object.keys(erros).length > 0 ? erros : null;
 };
-
 /***
  *
  * função para buscar a cidade pelo idCidade para
@@ -94,28 +94,26 @@ const buscarCidadePorId = async (
 ): Promise<BuscarCidadePorIdProps | null> => {
   let cidade: Cidade | null = null;
   let errosCidade: ErrosCidade | null = null;
-
   try {
-    const response = await axios.get(
-      `http://localhost:8000/rest/sistema/cidade/buscar/${idCidade}`
-    );
+    const response = await apiGetCidade(idCidade);
     if (response.data.dados) {
       cidade = response.data.dados;
       const errosValidacao = validarCamposVaziosCidade(response.data.dados);
-      //console.log(errosValidacao);
       if (errosValidacao) {
-        console.log("erros de valiodação ");
         errosCidade = setServerErrorsCidade(errosValidacao);
-        console.log(errosCidade);
       }
     }
-    console.log(cidade);
     return {
       cidade,
       errosCidade,
     };
   } catch (error: any) {
-    //console.log(error);
+    const mensagem = handleAxiosError(error);
+    AlertBus.emit({
+      message: mensagem,
+      variant: STATUS_TYPES.DANGER,
+      duration: 5000,
+    });
   }
   return null;
 };
@@ -131,14 +129,18 @@ export default function ConsultarCidade() {
   const navigate = useNavigate();
   // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
   const { idCidade } = useParams();
+  // hook de mensagens do sistema
+  const { loading, setLoading, showAlert } = useAlert();
 
   useEffect(() => {
     async function getCidade() {
+      setLoading(true);
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
         setModel(response.cidade);
         setErrors(response?.errosCidade ?? null);
       }
+      setLoading(false);
     }
     getCidade();
   }, [idCidade]);
@@ -146,7 +148,6 @@ export default function ConsultarCidade() {
   /*
    * função para estilizar o input conforme o seu estado, normal , validado, inválidado.
    */
-
   const getInputClass = (field: keyof Cidade): string => {
     if (!errors) return "form-control app-label mt-2";
 
@@ -171,13 +172,14 @@ export default function ConsultarCidade() {
 
   return (
     <div className="display">
+      {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <h2>Atualizar Cidade</h2>
-             <div className="custom-divider"></div>
+        <h2>{CIDADE.TITULO.CONSULTAR}</h2>
+        <div className="custom-divider"></div>
         <form>
           <div className="mb-1 mt-2">
             <label htmlFor="codCidade" className="app-label">
-              Código:
+              {CIDADE.LABEL.CODIGO_CIDADE}:
             </label>
           </div>
           <div className="input-group">
@@ -199,7 +201,7 @@ export default function ConsultarCidade() {
 
           <div className="mb-1 mt-4">
             <label htmlFor="nomeCidade" className="app-label">
-              Nome:
+              {CIDADE.LABEL.NOME_CIDADE}:
             </label>
           </div>
           <div className="input-group">

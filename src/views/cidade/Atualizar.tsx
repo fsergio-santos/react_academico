@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
 import { useAlert } from "../../contexto/AlertContexto";
+import { AlertBus } from "../../services/alert/alert.service";
 import {
   apiGetCidade,
   useApiCidade,
@@ -116,7 +117,12 @@ const buscarCidadePorId = async (
       errosCidade,
     };
   } catch (error: any) {
-    //console.log(error);
+    const mensagem = handleAxiosError(error);
+    AlertBus.emit({
+      message: mensagem,
+      variant: STATUS_TYPES.DANGER,
+      duration: 5000,
+    });
   }
   return null;
 };
@@ -298,21 +304,18 @@ export default function AtualizarCidade() {
       navigate(ROTA.CIDADE.LISTAR);
       return;
     }
-    //if (!validarFormulario()) {
-    //  showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
-    //}
+    if (!validarFormulario()) {
+      showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
+    }
     setLoading(true);
     try {
       const response = await putCidade(idCidade, model);
-      console.log(response);
       const { mensagem } = response.data;
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
       navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
-      console.log(error.dados);
-
       const errosValidacao = validarCamposVaziosCidade(error.dados);
       if (errosValidacao) {
         errosCidade = setServerErrorsCidade(errosValidacao);
@@ -334,12 +337,12 @@ export default function AtualizarCidade() {
     <div className="display">
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <h2>Atualizar Cidade</h2>
+        <h2>{CIDADE.TITULO.ATUALIZAR}</h2>
         <div className="custom-divider"></div>
         <form onSubmit={handleSubmit}>
           <div className="mb-2 mt-2">
             <label htmlFor="codCidade" className="app-label">
-              Código:
+              {CIDADE.LABEL.CODIGO_CIDADE}:
             </label>
           </div>
           <div className="input-group">
@@ -366,7 +369,7 @@ export default function AtualizarCidade() {
 
           <div className="mb-2 mt-4">
             <label htmlFor="nomeCidade" className="app-label">
-              Nome:
+              {CIDADE.LABEL.NOME_CIDADE}:
             </label>
           </div>
           <div className="input-group">

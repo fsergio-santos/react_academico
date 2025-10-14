@@ -20,6 +20,19 @@ export const CIDADE = {
     NOME: "nomeCidade",
   } as const,
 
+  LABEL: {
+    CODIGO_CIDADE: "Código",
+    NOME_CIDADE: "Nome",
+  },
+
+  TITULO: {
+    LISTA: `Lista de ${ENTITY_NAME}s`,
+    CRIAR: `Nova ${ENTITY_NAME}`,
+    ATUALIZAR: `Atualizar ${ENTITY_NAME}`,
+    EXCLUIR: `Excluir ${ENTITY_NAME}`,
+    CONSULTAR: `Consultar ${ENTITY_NAME}`,
+  },
+
   INPUT_ERROR: {
     ID: {
       BLANK: `O código de identificação do ${ENTITY_NAME} deve ser informado`,
