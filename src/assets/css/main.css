@@ -417,6 +417,13 @@ h1 {
   align-items: center;
 }
 
+.btn-wrapper a.btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-icon {
   display: flex;
   align-items: center;

@@ -222,18 +222,20 @@ export default function ConsultarCidade() {
             )}
           </div>
           <div className="btn-content mt-4">
-            <button
-              className="btn btn-cancel"
-              id="cancel"
-              type="button"
-              title={CIDADE.OPERACAO.POR_ID.CANCELAR}
-              onClick={handleCancel}
-            >
-              <span className="btn-icon">
-                <i>{<MdCancel />}</i>
-              </span>
-              {UI_CONFIG.BTN.CANCEL}
-            </button>
+            <div className="btn-wrapper">
+              <button
+                className="btn btn-cancel"
+                id="cancel"
+                type="button"
+                title={CIDADE.OPERACAO.POR_ID.CANCELAR}
+                onClick={handleCancel}
+              >
+                <span className="btn-icon">
+                  <i>{<MdCancel />}</i>
+                </span>
+                {UI_CONFIG.BTN.CANCEL}
+              </button>
+            </div>
           </div>
         </form>
       </div>

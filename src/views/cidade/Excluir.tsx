@@ -260,29 +260,33 @@ export default function ExcluirCidade() {
             )}
           </div>
           <div className="btn-content mt-4">
-            <button
-              id="submit"
-              type="submit"
-              title={CIDADE.OPERACAO.EXCLUIR.ACAO}
-              className="btn btn-delete"
-            >
-              <span className="btn-icon">
-                <i>{<FaTrashAlt />}</i>
-              </span>
-              {UI_CONFIG.BTN.DELETE}
-            </button>
-            <button
-              className="btn btn-cancel"
-              id="cancel"
-              type="button"
-              title={CIDADE.OPERACAO.EXCLUIR.CANCELAR}
-              onClick={handleCancel}
-            >
-              <span className="btn-icon">
-                <i>{<MdCancel />}</i>
-              </span>
-              {UI_CONFIG.BTN.CANCEL}
-            </button>
+            <div className="btn-wrapper">
+              <button
+                id="submit"
+                type="submit"
+                title={CIDADE.OPERACAO.EXCLUIR.ACAO}
+                className="btn btn-delete"
+              >
+                <span className="btn-icon">
+                  <i>{<FaTrashAlt />}</i>
+                </span>
+                {UI_CONFIG.BTN.DELETE}
+              </button>
+            </div>
+            <div className="btn-wrapper">
+              <button
+                className="btn btn-cancel"
+                id="cancel"
+                type="button"
+                title={CIDADE.OPERACAO.EXCLUIR.CANCELAR}
+                onClick={handleCancel}
+              >
+                <span className="btn-icon">
+                  <i>{<MdCancel />}</i>
+                </span>
+                {UI_CONFIG.BTN.CANCEL}
+              </button>
+            </div>
           </div>
         </form>
       </div>

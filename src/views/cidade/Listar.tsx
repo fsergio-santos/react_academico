@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { apiGetCidades } from "../../services/cidade/api/api.cidade";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade } from "../../services/cidade/type/cidade";
 import { UI_CONFIG } from "../../services/constants/system.constants";
@@ -15,9 +15,7 @@ const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
   //     setCidades(response.data.dados);
   //   });
   try {
-    const response = await axios.get(
-      "http://localhost:8000/rest/sistema/cidade/listar"
-    );
+    const response = await apiGetCidades();
     return response.data.dados;
   } catch (error: any) {
     console.log(error);
