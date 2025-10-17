@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { AlertBus } from "../../services/alert/alert.service";
 import { apiGetCidades } from "../../services/cidade/api/api.cidade";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade } from "../../services/cidade/type/cidade";
-import { UI_CONFIG } from "../../services/constants/system.constants";
+import {
+  STATUS_TYPES,
+  UI_CONFIG,
+} from "../../services/constants/system.constants";
+import { handleAxiosError } from "../../services/mensagens/error.sistema";
 import { ROTA } from "../../services/router/Url";
 
 const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
@@ -18,7 +23,12 @@ const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
     const response = await apiGetCidades();
     return response.data.dados;
   } catch (error: any) {
-    console.log(error);
+    const mensagem = handleAxiosError(error);
+    AlertBus.emit({
+      message: mensagem,
+      variant: STATUS_TYPES.DANGER,
+      duration: 5000,
+    });
   }
   return null;
 };
@@ -44,22 +54,19 @@ export default function ListarCidades() {
   return (
     <div className="display">
       <div className="card animated fadeInDown">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "15px",
-          }}
-        >
+        <div className="local_sistema">
           <h2>{CIDADE.TITULO.LISTA}</h2>
-          <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add">
+        </div>
+        <div>
+          <input className="form-control app-label mt-2" />
+          <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add ml-3 ">
             <span className="btn-icon">
               <i>{<FaPlus />}</i>
             </span>
             {UI_CONFIG.BTN.NEW}
           </Link>
         </div>
+        <br />
         <table>
           <thead>
             <tr>
