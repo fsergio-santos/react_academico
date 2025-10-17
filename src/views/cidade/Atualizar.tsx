@@ -61,7 +61,7 @@ const validarCamposVaziosCidade = (
 ): Partial<Record<keyof Cidade, string[]>> | null => {
   const erros: Partial<Record<keyof Cidade, string[]>> = {};
 
-  fieldsCidade.forEach((field) => {
+  fieldsCidade.forEach((field: keyof Cidade) => {
     const valor = cidade[field];
 
     const isEmpty =
@@ -334,7 +334,7 @@ export default function AtualizarCidade() {
     <div className="display">
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <h2>Atualizar Cidade</h2>
+         <h2>{CIDADE.TITULO.ATUALIZAR}</h2>
         <div className="custom-divider"></div>
         <form onSubmit={handleSubmit}>
           <div className="mb-2 mt-2">
@@ -391,29 +391,33 @@ export default function AtualizarCidade() {
             )}
           </div>
           <div className="btn-content mt-4">
-            <button
-              id="submit"
-              type="submit"
-              title={CIDADE.OPERACAO.ATUALIZAR.ACAO}
-              className="btn btn-edit"
-            >
-              <span className="btn-icon">
-                <i>{<FaSave />}</i>
-              </span>
-              {UI_CONFIG.BTN.UPDATE}
-            </button>
-            <button
-              className="btn btn-cancel"
-              id="cancel"
-              type="button"
-              title={CIDADE.OPERACAO.ATUALIZAR.CANCELAR}
-              onClick={handleCancel}
-            >
-              <span className="btn-icon">
-                <i>{<MdCancel />}</i>
-              </span>
-              {UI_CONFIG.BTN.CANCEL}
-            </button>
+            <div className="btn-wrapper">
+              <button
+                id="submit"
+                type="submit"
+                title={CIDADE.OPERACAO.ATUALIZAR.ACAO}
+                className="btn btn-edit"
+              >
+                <span className="btn-icon">
+                  <i>{<FaSave />}</i>
+                </span>
+                {UI_CONFIG.BTN.UPDATE}
+              </button>
+            </div>
+            <div className="btn-wrapper">
+              <button
+                className="btn btn-cancel"
+                id="cancel"
+                type="button"
+                title={CIDADE.OPERACAO.ATUALIZAR.CANCELAR}
+                onClick={handleCancel}
+              >
+                <span className="btn-icon">
+                  <i>{<MdCancel />}</i>
+                </span>
+                {UI_CONFIG.BTN.CANCEL}
+              </button>
+            </div>
           </div>
         </form>
       </div>

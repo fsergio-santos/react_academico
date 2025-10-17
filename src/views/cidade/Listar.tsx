@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade } from "../../services/cidade/type/cidade";
 import { UI_CONFIG } from "../../services/constants/system.constants";
 import { ROTA } from "../../services/router/Url";
@@ -45,15 +46,8 @@ export default function ListarCidades() {
   return (
     <div className="display">
       <div className="card animated fadeInDown">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "15px",
-          }}
-        >
-          <h2>Lista de Cidades</h2>
+        <div className="local_sistema">
+          <h2>{CIDADE.TITULO.LISTA}</h2>
           <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add">
             <span className="btn-icon">
               <i>{<FaPlus />}</i>

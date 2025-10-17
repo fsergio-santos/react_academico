@@ -405,6 +405,25 @@ h1 {
   gap: 1rem;
 }
 
+.btn-wrapper {
+  flex: 1;
+  display: flex;
+}
+
+.btn-wrapper .btn {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.btn-wrapper a.btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-icon {
   display: flex;
   align-items: center;
