@@ -1,3 +1,18 @@
+.table-toolbar-container {
+  display: flex;
+  justify-content: space-between; /* Joga os grupos para as extremidades */
+  align-items: center;
+  flex-wrap: wrap; /* Permite a quebra de linha em telas menores */
+  gap: 1.5rem; /* Espaçamento entre os grupos */
+  margin-bottom: 1rem;
+}
+
+.table-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* Espaçamento entre o select e o input */
+}
+
 table {
   width: 100%;
   border-spacing: 0;
@@ -63,25 +78,6 @@ td.actions {
   padding: 1.25rem 1.5rem;
   margin-bottom: 1rem;
   margin-top: 0.5rem;
-}
-
-.alert {
-  padding: 1rem;
-  background-color: #ff4040;
-  color: white;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.notification {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 100;
-  padding: 1rem 1.5rem;
-  background-color: #00a762;
-  color: white;
-  border-radius: 0.5rem;
 }
 
 /* Login */

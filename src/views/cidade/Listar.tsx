@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -34,6 +34,19 @@ const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
 };
 
 export default function ListarCidades() {
+  // classificação da tabela pelas colunas existenstes no registro
+  // apresentado
+  const [sortConfig, setSortConfig] = useState<{
+    key: string | null;
+    direction: string | null;
+  }>({ key: null, direction: "asc" });
+  //número da página atual que ser exibida na tabela
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  // quantidade de registros em cada página exibida na tabela
+  const [recordsPerPage, setRecordsPerPage] = useState<number>(5);
+  // input - cidade que será filtrada no array de cidades e retornando
+  // todas as cidades coincidentes com termo pesquisado.
+  const [searchTerm, setSearchTerm] = useState<string>("");
   // useState = hook - gancho - função
   // reagir as alterações na variável
   // renderiza -
@@ -51,22 +64,50 @@ export default function ListarCidades() {
     getCidades();
   }, []);
 
+  // função para filtrar os registros no array Cidade[]
+  // retornando em filteredData dos dados correspondentes
+  const filteredData: Cidade[] = useMemo(() => {
+    return (models ?? []).filter((item: any) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [models, searchTerm]);
+
   return (
     <div className="display">
       <div className="card animated fadeInDown">
         <div className="local_sistema">
           <h2>{CIDADE.TITULO.LISTA}</h2>
         </div>
-        <div>
-          <input className="form-control app-label mt-2" />
-          <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add ml-3 ">
-            <span className="btn-icon">
-              <i>{<FaPlus />}</i>
-            </span>
-            {UI_CONFIG.BTN.NEW}
-          </Link>
+        <div className="table-toolbar-container">
+          <div className="table-toolbar-left">
+            <select
+              className="form-select"
+              aria-label="Quantidade de registros por página"
+            >
+              <option value="10">10 por página</option>
+              <option value="15">15 por página</option>
+              <option value="20">20 por página</option>
+              <option value="25">25 por página</option>
+            </select>
+            <input
+              className="form-control"
+              placeholder="Pesquisar..."
+              aria-label="Campo de pesquisa"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="table-toolbar-right">
+            <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add ml-3 ">
+              <span className="btn-icon">
+                <i>{<FaPlus />}</i>
+              </span>
+              {UI_CONFIG.BTN.NEW}
+            </Link>
+          </div>
         </div>
-        <br />
         <table>
           <thead>
             <tr>
@@ -78,7 +119,7 @@ export default function ListarCidades() {
             </tr>
           </thead>
           <tbody>
-            {models?.map((model) => (
+            {filteredData?.map((model) => (
               <tr key={model.idCidade}>
                 <td>{model.codCidade}</td>
                 <td>{model.nomeCidade}</td>
