@@ -1,0 +1,92 @@
+.pagination-container {
+  display: flex; /* Ativa o Flexbox */
+  justify-content: space-between; /* Joga os itens para as extremidades */
+  align-items: center; /* Alinha verticalmente no centro */
+  flex-wrap: wrap; /* Permite quebrar a linha em telas pequenas */
+  gap: 1.5rem; /* Adiciona um espaço caso a linha quebre */
+  margin-top: 1.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid #dee2e6; /* Linha sutil para separar da tabela */
+}
+
+.pagination-info-text {
+  margin: 0; /* Remove a margem padrão do parágrafo */
+  color: #6c757d; /* Cor mais suave para o texto de informação */
+  font-size: 0.9rem;
+}
+
+.page-link {
+  --page-link-color: #0d6efd;
+  --page-link-bg: #fff;
+  --page-link-border: #dee2e6;
+  --page-link-hover-color: #0a58ca;
+  --page-link-hover-bg: #e9ecef;
+  --page-link-focus-bg: #e2e6ea;
+  --page-link-active-color: #fff;
+  --page-link-active-bg: #0d6efd;
+  --page-link-disabled-color: #6c757d;
+  --page-link-disabled-bg: #e2e6ea;
+  --page-link-disabled-border: #dee2e6;
+}
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  justify-content: space-between;
+}
+
+.page-link {
+  position: relative;
+  display: block;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  color: var(--page-link-color);
+  background-color: var(--page-link-bg);
+  border: 1px solid var(--page-link-border);
+  text-decoration: none;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.page-link:hover {
+  color: var(--page-link-hover-color);
+  background-color: var(--page-link-hover-bg);
+  border-color: var(--page-link-border);
+}
+
+.page-link:focus {
+  background-color: var(--page-link-focus-bg);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.page-link.active,
+.active > .page-link {
+  color: var(--page-link-active-color);
+  background-color: var(--page-link-active-bg);
+  border-color: var(--page-link-active-bg);
+}
+
+.page-link.disabled,
+.disabled > .page-link {
+  color: var(--page-link-disabled-color);
+  background-color: var(--page-link-disabled-bg);
+  border-color: var(--page-link-disabled-border);
+}
+
+.page-item:not(:first-child) .page-link {
+  margin-left: -1px;
+}
+
+.page-item:first-child .page-link {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}

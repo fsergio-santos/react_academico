@@ -19,6 +19,7 @@ export const UI_CONFIG = {
   TOAST_DURATION: 5000, // Nome mais descritivo que TIME
   ARROW_UP: "\u25B2", // ▲
   ARROW_DOWN: "\u25BC", // ▼
+  ITEMS_PER_PAGE: 5,
   BTN: {
     NEW: "Novo",
     EDIT: "Atualizar",
