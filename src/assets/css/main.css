@@ -376,10 +376,10 @@ h1 {
   justify-content: center; /*     centraliza horizontalmente (para ícone único) */
   gap: 0.5rem; /*     espaçamento entre ícone e texto */
 
-  padding: 0.75rem 0.375rem;
+  padding: 0.65rem 0.775rem;
   font-family: "Open Sans", sans-serif;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.5;
   /* color:#212529; */
   text-align: center;
@@ -1403,4 +1403,233 @@ h1 {
   height: 1px;
   background-color: #e0e0e0;
   margin: 24px 0;
+}
+
+/* ============================= */
+/*          TABELAS              */
+/* ============================= */
+
+/* container para toolbar para tabela */
+
+.table-toolbar-container {
+  display: flex;
+  justify-content: space-between; /* Joga os grupos para as extremidades */
+  align-items: center;
+  flex-wrap: wrap; /* Permite a quebra de linha em telas menores */
+  gap: 1.5rem; /* Espaçamento entre os grupos */
+  margin-bottom: 1rem;
+}
+
+.table-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* Espaçamento entre o select e o input */
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: var(--text-body);
+  background-color: var(--bg-body);
+  vertical-align: middle;
+  border-collapse: collapse;
+  border-color: var(--border-default);
+  font-size: 1.2rem;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.table > tbody {
+  vertical-align: inherit;
+  background-color: var(--bg-white);
+}
+
+.table > thead {
+  vertical-align: bottom;
+  color: var(--text-white);
+}
+
+tbody tr:hover {
+  background-color: #f6f1f1;
+}
+
+table > thead > tr > th {
+  text-align: left;
+  padding: 1.2rem;
+  background-color: #5b08a7;
+  text-align: center;
+  font-weight: 700;
+}
+
+table > thead > tr > th.center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table > tbody tr > td {
+  text-align: left;
+  padding: 1.2rem;
+  text-align: left;
+  color: var(--bg-dark);
+  font-weight: 600;
+}
+
+table > tbody > tr > td.center {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+th.actions,
+td.actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* ======= Tabela compacta ======= */
+.table-sm > :not(caption) > * > * {
+  padding: 0.25rem;
+}
+
+/* ======= Bordas ======= */
+.table-bordered > :not(caption) > * {
+  border-width: 1px 0;
+}
+.table-bordered > :not(caption) > * > * {
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: var(--border-default);
+}
+
+/* ======= Sem borda ======= */
+.table-borderless > :not(caption) > * > * {
+  border-bottom-width: 0;
+}
+.table-borderless > :not(:first-child) {
+  border-top-width: 0;
+}
+
+/* ======= Listras ======= */
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(33, 37, 41, 0.05); /* derivado de --text-dark */
+  color: var(--text-body);
+}
+
+/* ======= Listras por coluna ======= */
+.table-striped-columns > :not(caption) > tr > :nth-child(even) {
+  background-color: rgba(33, 37, 41, 0.05);
+  color: var(--text-body);
+}
+
+/* ======= Hover ======= */
+.table-hover > tbody > tr:hover > * {
+  background-color: rgba(33, 37, 41, 0.075);
+  color: var(--text-body);
+}
+
+/* ======= Linha ativa ======= */
+.table-active {
+  background-color: rgba(33, 37, 41, 0.1);
+  color: var(--text-body);
+}
+
+/* ======= Caption no topo ======= */
+.caption-top {
+  caption-side: top;
+}
+
+/* ======= Divisor de grupo ======= */
+.table-group-divider {
+  border-top: 2px solid currentColor;
+}
+
+/* ============================= */
+/*       VARIAÇÕES DE COR        */
+/* ============================= */
+
+/* Primária */
+.table-primary {
+  color: var(--text-dark);
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+}
+
+/* Secundária */
+.table-secondary {
+  color: var(--text-dark);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+}
+
+/* Sucesso */
+.table-success {
+  color: var(--text-dark);
+  background-color: var(--bg-success);
+  border-color: var(--border-success);
+}
+
+/* Informação */
+.table-info {
+  color: var(--text-dark);
+  background-color: var(--bg-info);
+  border-color: var(--border-info);
+}
+
+/* Aviso */
+.table-warning {
+  color: var(--text-dark);
+  background-color: var(--bg-warning);
+  border-color: var(--border-default);
+}
+
+/* Perigo */
+.table-danger {
+  color: var(--text-dark);
+  background-color: var(--bg-danger);
+  border-color: var(--border-danger);
+}
+
+/* Claro */
+.table-light {
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  border-color: var(--border-default);
+}
+
+/* Escuro */
+.table-dark {
+  color: var(--text-light);
+  background-color: var(--bg-dark);
+  border-color: var(--border-default);
+}
+
+/* ======= Hover para temas ======= */
+.table-primary.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-primary) 85%, #fff);
+}
+.table-secondary.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-secondary) 85%, #fff);
+}
+.table-success.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-success) 85%, #fff);
+}
+.table-info.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-info) 85%, #fff);
+}
+.table-warning.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-warning) 85%, #fff);
+}
+.table-danger.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-danger) 85%, #fff);
+}
+.table-light.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-light) 85%, #fff);
+}
+.table-dark.table-hover > tbody > tr:hover > * {
+  background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
 }

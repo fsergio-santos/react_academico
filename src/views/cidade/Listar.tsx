@@ -40,8 +40,7 @@ const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
 };
 
 export default function ListarCidades() {
-  // classificação da tabela pelas colunas existenstes no registro
-  // apresentado
+  // classificação da tabela pelas colunas existenstes no registro apresentado
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: CIDADE.FIELDS.NOME,
     direction: "asc",
@@ -184,11 +183,11 @@ export default function ListarCidades() {
             </Link>
           </div>
         </div>
-        <table>
+        <table className="table table-bordered table-striped">
           <thead>
             <tr>
               <th onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}>
-                {CIDADE.LABEL.CODIGO_CIDADE} { getSortIcon(CIDADE.FIELDS.CODIGO)}
+                {CIDADE.LABEL.CODIGO_CIDADE} {getSortIcon(CIDADE.FIELDS.CODIGO)}
               </th>
               <th onClick={() => handleSort(CIDADE.FIELDS.NOME)}>
                 {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
