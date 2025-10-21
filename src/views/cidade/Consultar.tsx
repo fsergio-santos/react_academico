@@ -11,7 +11,11 @@ import {
   fieldsCidade,
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
-import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
+import type {
+  BuscarCidadePorIdProps,
+  Cidade,
+  ErrosCidade,
+} from "../../services/cidade/type/cidade";
 import {
   STATUS_TYPES,
   UI_CONFIG,
@@ -84,11 +88,6 @@ const validarCamposVaziosCidade = (
  *
  **/
 
-interface BuscarCidadePorIdProps {
-  cidade: Cidade | null;
-  errosCidade: ErrosCidade | null | undefined;
-}
-
 const buscarCidadePorId = async (
   idCidade: number
 ): Promise<BuscarCidadePorIdProps | null> => {
@@ -119,15 +118,13 @@ const buscarCidadePorId = async (
 };
 
 export default function ConsultarCidade() {
-  // estado para controlar o movimento entre os inputs
-  const [touched, setTouched] = useState<boolean | null>(null);
   // estado para armazenar os dados do formulário cidade
-  const [model, setModel] = useState<Cidade | null>(null);
+  const [model, setModel] = useState<Cidade>(CIDADE.DADOS_INICIAIS);
   // Estado para armazenar os erros de validação
-  const [errors, setErrors] = useState<ErrosCidade | null>(null);
+  const [errors, setErrors] = useState<ErrosCidade>({});
   // hook para naveção entre páginas
   const navigate = useNavigate();
-  // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
+  // hook para recuperar o id passado na url - /sistema/cidade/atualizar/6
   const { idCidade } = useParams();
   // hook de mensagens do sistema
   const { loading, setLoading, showAlert } = useAlert();
@@ -138,7 +135,9 @@ export default function ConsultarCidade() {
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
         setModel(response.cidade);
-        setErrors(response?.errosCidade ?? null);
+        if (response.errosCidade) {
+          setErrors(response.errosCidade);
+        }
       }
       setLoading(false);
     }
@@ -152,17 +151,12 @@ export default function ConsultarCidade() {
     if (!errors) return "form-control app-label mt-2";
 
     const hasError = errors[field];
-    const wasTouched = touched; // ou touched[field] se for por campo
 
     if (hasError) {
       return "form-control is-invalid app-label input-error mt-2";
-    }
-
-    if (wasTouched && !hasError) {
+    } else {
       return "form-control is-valid app-label input-valid mt-2";
     }
-
-    return "form-control app-label mt-2";
   };
 
   const handleCancel = (e: MouseEvent<HTMLButtonElement>) => {

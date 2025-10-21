@@ -29,6 +29,10 @@ export const UI_CONFIG = {
     QUERY: "Consultar",
     UPDATE: "Salvar",
   },
+  ACTION_MODAL: {
+    EDIT: `Tem certeza em atualizar o cadastro de `,
+    DELETE: `Tem certeza em excluir o cadastro existente de `,
+  },
 };
 
 // --- Validações e Regras de Negócio ---
@@ -41,7 +45,7 @@ export const VALIDATION_RULES = {
 // --- Tipos de Status e Variantes (para alertas, botões, etc.) ---
 export const STATUS_TYPES = {
   SUCCESS: "success",
-  DANGER: "danger",
+  DANGER: "delete",
   INFO: "info",
   WARNING: "warning",
   PRIMARY: "primary",

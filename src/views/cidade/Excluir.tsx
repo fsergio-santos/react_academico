@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { FaTrashAlt } from "react-icons/fa";
-import { MdCancel } from "react-icons/md";
+import { MdBrowserUpdated, MdCancel } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
+import useMessageDialog from "../../components/modal/Modal";
 import { useAlert } from "../../contexto/AlertContexto";
 import { AlertBus } from "../../services/alert/alert.service";
 import {
@@ -15,7 +16,11 @@ import {
   fieldsCidade,
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
-import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
+import type {
+  BuscarCidadePorIdProps,
+  Cidade,
+  ErrosCidade,
+} from "../../services/cidade/type/cidade";
 import {
   STATUS_TYPES,
   UI_CONFIG,
@@ -89,11 +94,6 @@ const validarCamposVaziosCidade = (
  *
  **/
 
-interface BuscarCidadePorIdProps {
-  cidade: Cidade | null;
-  errosCidade: ErrosCidade | null | undefined;
-}
-
 const buscarCidadePorId = async (
   idCidade: number
 ): Promise<BuscarCidadePorIdProps | null> => {
@@ -124,20 +124,20 @@ const buscarCidadePorId = async (
 };
 
 export default function ExcluirCidade() {
-  // estado para controlar o movimento entre os inputs
-  const [touched, setTouched] = useState<boolean | null>(null);
   // estado para armazenar os dados do formulário cidade
-  const [model, setModel] = useState<Cidade | null>(null);
+  const [model, setModel] = useState<Cidade>(CIDADE.DADOS_INICIAIS);
   // Estado para armazenar os erros de validação
-  const [errors, setErrors] = useState<ErrosCidade | null>(null);
+  const [errors, setErrors] = useState<ErrosCidade>({});
   // hook para naveção entre páginas
   const navigate = useNavigate();
-  // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
+  // hook para recuperar o id passado na url - /sistema/cidade/atualizar/6
   const { idCidade } = useParams();
   // hook de mensagens do sistema
   const { loading, setLoading, showAlert } = useAlert();
   // hoook para manutenção do registro de cidade.
   const { deleteCidade } = useApiCidade();
+  // hook para exibir mensagens de alerta para o usuário
+  const { openModal, MessageDialog } = useMessageDialog();
 
   useEffect(() => {
     setLoading(true);
@@ -145,7 +145,9 @@ export default function ExcluirCidade() {
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
         setModel(response.cidade);
-        setErrors(response?.errosCidade ?? null);
+        if (response.errosCidade) {
+          setErrors(response.errosCidade);
+        }
       }
       setLoading(false);
     }
@@ -160,22 +162,22 @@ export default function ExcluirCidade() {
     if (!errors) return "form-control app-label mt-2";
 
     const hasError = errors[field];
-    const wasTouched = touched; // ou touched[field] se for por campo
 
     if (hasError) {
       return "form-control is-invalid app-label input-error mt-2";
-    }
-
-    if (wasTouched && !hasError) {
+    } else {
       return "form-control is-valid app-label input-valid mt-2";
     }
+  };
 
-    return "form-control app-label mt-2";
+  const handleBeforeSumit = (e: FormEvent) => {
+    e.preventDefault();
+    openModal();
   };
 
   /*
    * handleSubmit
-   * função que executa a validação geral dos dados e envia os formulário JSON
+   * função que executa a exclusão dos dados e envia os formulário JSON
    * para o servidor nestjs. nest_academico através da API.
    *
    */
@@ -194,12 +196,12 @@ export default function ExcluirCidade() {
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
-      navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
       const mensagem = handleAxiosError(error);
       showAlert(mensagem, STATUS_TYPES.DANGER);
     } finally {
       setLoading(false);
+      navigate(ROTA.CIDADE.LISTAR);
     }
   };
 
@@ -211,10 +213,19 @@ export default function ExcluirCidade() {
   return (
     <div className="display">
       {loading ? <Loading /> : null}
+      <MessageDialog
+        title={`${UI_CONFIG.BTN.DELETE} ${CIDADE.ENTITY}`}
+        body={`${UI_CONFIG.ACTION_MODAL.DELETE}${CIDADE.ENTITY}`}
+        label={UI_CONFIG.BTN.DELETE}
+        onSave={handleSubmit}
+        variant={STATUS_TYPES.DANGER}
+        iconConfirm={<MdBrowserUpdated />}
+        iconCancel={<MdCancel />}
+      />
       <div className="card animated fadeInDown">
-        <h2>Excluir Cidade</h2>
+        <h2>{CIDADE.TITULO.EXCLUIR}</h2>
         <div className="custom-divider"></div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleBeforeSumit}>
           <div className="mb-1 mt-2">
             <label htmlFor="codCidade" className="app-label">
               {CIDADE.LABEL.CODIGO_CIDADE}:

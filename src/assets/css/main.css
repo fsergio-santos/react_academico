@@ -44,7 +44,7 @@
   --text-body: #212121;
 
   /* Cores auxiliares */
-  --border-default: #dee2e6;
+  --border-default: #cdcfd3;
   --border-danger: #dc3545;
   --border-success: #28a745;
   --border-add: #146c43;
@@ -69,6 +69,11 @@
   --link-focus: #0a58ca;
 
   --form-control-focus: #5b08a7;
+
+  /* cores para tabela */
+  --tbody-tr-hover: #f6f1f1;
+  --bg-table-thead: #5b08a7;
+  --border-thead-bottom: #4a068b;
 }
 
 html,
@@ -435,6 +440,7 @@ h1 {
 .btn-label {
   display: inline-block;
 }
+
 
 /* definição para o botão de sucesso */
 .btn-success {
@@ -1445,6 +1451,7 @@ h1 {
 .table > tbody {
   vertical-align: inherit;
   background-color: var(--bg-white);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .table > thead {
@@ -1453,20 +1460,30 @@ h1 {
 }
 
 tbody tr:hover {
-  background-color: #f6f1f1;
+  background-color: var(--tbody-tr-hover);
 }
 
 table > thead > tr > th {
   text-align: left;
-  padding: 1.2rem;
-  background-color: #5b08a7;
+  padding: 1.2rem 0.8rem !important;
+  background-color: var(--bg-table-thead);
   text-align: center;
   font-weight: 700;
+  letter-spacing: 0.5px; /* leve espaçamento entre letras */
+  position: relative;
+  z-index: 1;
+  border-bottom: 2px solid var(--border-thead-bottom); /* separador mais marcado */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* sombra suave abaixo do cabeçalho */
 }
 
 table > thead > tr > th.center {
   text-align: center;
   vertical-align: middle;
+}
+
+tbody tr:hover {
+  background-color: var(--tbody-tr-hover);
+  transition: background-color 0.2s ease;
 }
 
 table > tbody tr > td {
@@ -1488,7 +1505,13 @@ td.actions {
   width: 1%;
   white-space: nowrap;
   text-align: center;
-  min-height: 100vh;
+}
+
+.table thead tr th:first-child {
+  border-top-left-radius: 8px;
+}
+.table thead tr th:last-child {
+  border-top-right-radius: 8px;
 }
 
 /* ======= Tabela compacta ======= */
@@ -1499,6 +1522,7 @@ td.actions {
 /* ======= Bordas ======= */
 .table-bordered > :not(caption) > * {
   border-width: 1px 0;
+  border-bottom: 1px solid var(--border-default);
 }
 .table-bordered > :not(caption) > * > * {
   border-width: 0 1px;
@@ -1632,4 +1656,56 @@ td.actions {
 }
 .table-dark.table-hover > tbody > tr:hover > * {
   background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
+}
+
+/* aplicar responsividade na tabela */
+
+@media only screen and (max-width: 800px) {
+  #no_more_table table,
+  #no_more_table thead,
+  #no_more_table tbody,
+  #no_more_table th,
+  #no_more_table td,
+  #no_more_table tr {
+    display: block;
+  }
+
+  #no_more_table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #no_more_table tr {
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  #no_more_table td {
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+    padding: 1rem 1rem 1rem 50%;
+    text-align: left;
+  }
+
+  #no_more_table td:before {
+    content: attr(data-label);
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    color: #080808;
+  }
+
+  /* Hover para as demais colunas */
+  #no_more_table tbody tr:hover td:not(:first-child) {
+    background-color: #f6f1f1;
+  }
 }

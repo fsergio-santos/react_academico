@@ -286,14 +286,14 @@
 }
 
 /* --- Perigo (Times-circle) --- */
-.alert-danger {
+.alert-delete {
   background-color: #f7dfe1;
   color: #5b161c;
   padding-left: 4rem;
 }
 
 /* Círculo com "X" (feito com gradientes) */
-.alert-danger::before {
+.alert-delete::before {
   left: 18px;
   top: 10px;
   width: 1em;

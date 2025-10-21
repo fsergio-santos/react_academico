@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { FaSave } from "react-icons/fa";
-import { MdCancel } from "react-icons/md";
+import { MdBrowserUpdated, MdCancel } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
 import MensagemErro from "../../components/mensagem/MensagemErro";
+import useMessageDialog from "../../components/modal/Modal";
 import { useAlert } from "../../contexto/AlertContexto";
 import { AlertBus } from "../../services/alert/alert.service";
 import {
@@ -15,7 +16,11 @@ import {
   fieldsCidade,
   mapaCampoParaMensagem,
 } from "../../services/cidade/constants/cidade.constants";
-import type { Cidade, ErrosCidade } from "../../services/cidade/type/cidade";
+import type {
+  BuscarCidadePorIdProps,
+  Cidade,
+  ErrosCidade,
+} from "../../services/cidade/type/cidade";
 import {
   STATUS_TYPES,
   UI_CONFIG,
@@ -90,11 +95,6 @@ const validarCamposVaziosCidade = (
  *
  **/
 
-interface BuscarCidadePorIdProps {
-  cidade: Cidade | null;
-  errosCidade: ErrosCidade | null | undefined;
-}
-
 const buscarCidadePorId = async (
   idCidade: number
 ): Promise<BuscarCidadePorIdProps | null> => {
@@ -129,19 +129,23 @@ const buscarCidadePorId = async (
 
 export default function AtualizarCidade() {
   // estado para controlar o movimento entre os inputs
-  const [touched, setTouched] = useState<boolean | null>(null);
+  const [touched, setTouched] = useState<
+    Partial<Record<keyof Cidade, boolean>>
+  >({});
   // estado para armazenar os dados do formulário cidade
-  const [model, setModel] = useState<Cidade | null>(null);
+  const [model, setModel] = useState<Cidade>(CIDADE.DADOS_INICIAIS);
   // Estado para armazenar os erros de validação
-  const [errors, setErrors] = useState<ErrosCidade | null>(null);
+  const [errors, setErrors] = useState<ErrosCidade>({});
   // hook para naveção entre páginas
   const navigate = useNavigate();
-  // hook para recuperar o id passado na url - /sistemna/cidade/atualizar/6
+  // hook para recuperar o id passado na url - /sistema/cidade/atualizar/6
   const { idCidade } = useParams<{ idCidade: string }>();
   // hook de mensagens do sistema
   const { loading, setLoading, showAlert } = useAlert();
   // hoook para manutenção do registro de cidade.
   const { putCidade } = useApiCidade();
+  // hook para exibir mensagens de alerta para o usuário
+  const { openModal, MessageDialog } = useMessageDialog();
 
   // useEffect hook para atualizar o estado dos atributos da cidade
   // ou atualizar o estado de erros existente no cadastro da cidade.
@@ -150,8 +154,10 @@ export default function AtualizarCidade() {
     async function getCidade() {
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
-        setErrors(response?.errosCidade ?? null);
         setModel(response.cidade);
+        if (response.errosCidade) {
+          setErrors(response.errosCidade);
+        }
         if (response?.errosCidade) {
           showAlert(CIDADE.OPERACAO.POR_ID.FIELDS, STATUS_TYPES.DANGER);
         }
@@ -170,19 +176,14 @@ export default function AtualizarCidade() {
     // Atualiza o estado do modelo com o novo valor
 
     setModel((prev) => {
-      if (prev === null) return prev;
-      return { ...prev, [name]: value };
+      const update = { ...prev, [name]: value };
+
+      validateField(name, value);
+
+      return update;
     });
 
-    // Limpa os erros do campo que está sendo editado
-    setErrors((prev) => {
-      if (prev === null) return prev;
-      return {
-        ...prev,
-        [name]: undefined,
-        [`${name}Mensagem`]: undefined,
-      };
-    });
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   /**
@@ -233,12 +234,10 @@ export default function AtualizarCidade() {
    * Valida um campo individualmente. Geralmente usado no evento onBlur.
    * @param name - O nome do campo a ser validado.
    */
-  const validateField = (name: keyof Cidade) => {
+  const validateField = (name: keyof Cidade, value: string) => {
     let messages: string[] = [];
 
     if (!model) return;
-
-    const value = model[name];
 
     // Lógica de validação específica para cada campo
     switch (name) {
@@ -266,6 +265,8 @@ export default function AtualizarCidade() {
       [name]: messages.length > 0,
       [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
     }));
+
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   /*
@@ -273,8 +274,6 @@ export default function AtualizarCidade() {
    */
 
   const getInputClass = (field: keyof Cidade): string => {
-    if (!errors) return "form-control app-label mt-2";
-
     const hasError = errors[field];
     const wasTouched = touched; // ou touched[field] se for por campo
 
@@ -296,16 +295,23 @@ export default function AtualizarCidade() {
    *
    */
 
+  const handleBeforeSumit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validarFormulario()) {
+      showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
+      return;
+    }
+
+    openModal();
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     let errosCidade: ErrosCidade | null = null;
-    e.preventDefault();
     if (!idCidade || !model) {
       showAlert(CIDADE.OPERACAO.POR_ID.NAO_LOCALIZADO, STATUS_TYPES.DANGER);
       navigate(ROTA.CIDADE.LISTAR);
       return;
-    }
-    if (!validarFormulario()) {
-      showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
     }
     setLoading(true);
     try {
@@ -314,17 +320,20 @@ export default function AtualizarCidade() {
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
-      navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
       const errosValidacao = validarCamposVaziosCidade(error.dados);
       if (errosValidacao) {
         errosCidade = setServerErrorsCidade(errosValidacao);
       }
-      setErrors(errosCidade);
+      if (errosCidade) {
+        setErrors(errosCidade);
+      }
       const mensagem = handleAxiosError(error);
       showAlert(mensagem, STATUS_TYPES.DANGER);
     } finally {
       setLoading(false);
+      setTouched({});
+      navigate(ROTA.CIDADE.LISTAR);
     }
   };
 
@@ -336,10 +345,19 @@ export default function AtualizarCidade() {
   return (
     <div className="display">
       {loading ? <Loading /> : null}
+      <MessageDialog
+        title={`${UI_CONFIG.BTN.EDIT} ${CIDADE.ENTITY}`}
+        body={`${UI_CONFIG.ACTION_MODAL.EDIT}${CIDADE.ENTITY}`}
+        label={UI_CONFIG.BTN.EDIT}
+        onSave={handleSubmit}
+        variant={STATUS_TYPES.DANGER}
+        iconConfirm={<MdBrowserUpdated />}
+        iconCancel={<MdCancel />}
+      />
       <div className="card animated fadeInDown">
         <h2>{CIDADE.TITULO.ATUALIZAR}</h2>
         <div className="custom-divider"></div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleBeforeSumit}>
           <div className="mb-2 mt-2">
             <label htmlFor="codCidade" className="app-label">
               {CIDADE.LABEL.CODIGO_CIDADE}:
@@ -354,7 +372,9 @@ export default function AtualizarCidade() {
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.CODIGO, e.target.value)
               }
-              onBlur={() => validateField(CIDADE.FIELDS.CODIGO)}
+              onBlur={(e) =>
+                validateField(CIDADE.FIELDS.CODIGO, e.target.value)
+              }
               readOnly={false}
               disabled={false}
               autoComplete="off"
@@ -381,7 +401,7 @@ export default function AtualizarCidade() {
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.NOME, e.target.value)
               }
-              onBlur={() => validateField(CIDADE.FIELDS.NOME)}
+              onBlur={(e) => validateField(CIDADE.FIELDS.NOME, e.target.value)}
               readOnly={false}
               disabled={false}
               autoComplete="off"

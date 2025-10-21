@@ -175,7 +175,11 @@ export default function ListarCidades() {
             />
           </div>
           <div className="table-toolbar-right">
-            <Link to={`${ROTA.CIDADE.CRIAR}`} className="btn btn-add ml-3 ">
+            <Link
+              to={`${ROTA.CIDADE.CRIAR}`}
+              className="btn btn-add ml-3 "
+              title={CIDADE.OPERACAO.CRIAR.ACAO}
+            >
               <span className="btn-icon">
                 <i>{<FaPlus />}</i>
               </span>
@@ -183,74 +187,82 @@ export default function ListarCidades() {
             </Link>
           </div>
         </div>
-        <table className="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}>
-                {CIDADE.LABEL.CODIGO_CIDADE} {getSortIcon(CIDADE.FIELDS.CODIGO)}
-              </th>
-              <th onClick={() => handleSort(CIDADE.FIELDS.NOME)}>
-                {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
-              </th>
-              <th className="center actions" colSpan={3}>
-                Ação
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentRecords.length > 0 ? (
-              currentRecords.map((model) => (
-                <tr key={model.idCidade}>
-                  <td>{model.codCidade}</td>
-                  <td>{model.nomeCidade}</td>
-                  <td className="center actions">
-                    <Link
-                      to={`${ROTA.CIDADE.ATUALIZAR}/${model.idCidade}`}
-                      className="btn btn-edit ml-2"
-                    >
-                      <span className="btn-icon">
-                        <i>{<FaPencilAlt />}</i>
-                      </span>
-                      {UI_CONFIG.BTN.EDIT}
-                    </Link>
-
-                    <Link
-                      to={`${ROTA.CIDADE.EXCLUIR}/${model.idCidade}`}
-                      className="btn btn-delete ml-2"
-                    >
-                      <span className="btn-icon">
-                        <i>{<FaTrashAlt />}</i>
-                      </span>
-                      {UI_CONFIG.BTN.DELETE}
-                    </Link>
-
-                    <Link
-                      to={`${ROTA.CIDADE.POR_ID}/${model.idCidade}`}
-                      className="btn btn-info ml-2 mr-2"
-                    >
-                      {" "}
-                      <span className="btn-icon">
-                        <i>{<FaMagnifyingGlass />}</i>
-                      </span>
-                      {UI_CONFIG.BTN.QUERY}
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
+        <div id="no_more_table">
+          <table className="table table-bordered table-striped cf">
+            <thead>
               <tr>
-                <td colSpan={3}>Nenhum resultado encontrado</td>
+                <th onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}>
+                  {CIDADE.LABEL.CODIGO_CIDADE}{" "}
+                  {getSortIcon(CIDADE.FIELDS.CODIGO)}
+                </th>
+                <th onClick={() => handleSort(CIDADE.FIELDS.NOME)}>
+                  {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
+                </th>
+                <th className="center actions" colSpan={3}>
+                  Ação
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
-        <PaginationFooter
-          currentPage={currentPage}
-          pageSize={recordsPerPage}
-          totalElements={filteredData.length}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+            </thead>
+            <tbody>
+              {currentRecords.length > 0 ? (
+                currentRecords.map((model) => (
+                  <tr key={model.idCidade}>
+                    <td data-label={CIDADE.LABEL.CODIGO_CIDADE}>
+                      {model.codCidade}
+                    </td>
+                    <td data-label={CIDADE.LABEL.NOME_CIDADE}>
+                      {model.nomeCidade}
+                    </td>
+                    <td data-label="Ação" className="center actions">
+                      <Link
+                        to={`${ROTA.CIDADE.ATUALIZAR}/${model.idCidade}`}
+                        className="btn btn-edit ml-2"
+                        title={CIDADE.OPERACAO.ATUALIZAR.ACAO}
+                      >
+                        <span className="btn-icon">
+                          <i>{<FaPencilAlt />}</i>
+                        </span>
+                        {/* {UI_CONFIG.BTN.EDIT} */}
+                      </Link>
+                      <Link
+                        to={`${ROTA.CIDADE.EXCLUIR}/${model.idCidade}`}
+                        className="btn btn-delete ml-2"
+                        title={CIDADE.OPERACAO.EXCLUIR.ACAO}
+                      >
+                        <span className="btn-icon">
+                          <i>{<FaTrashAlt />}</i>
+                        </span>
+                        {/* {UI_CONFIG.BTN.DELETE} */}
+                      </Link>
+                      <Link
+                        to={`${ROTA.CIDADE.POR_ID}/${model.idCidade}`}
+                        className="btn btn-info ml-2 mr-2"
+                        title={CIDADE.OPERACAO.POR_ID.ACAO}
+                      >
+                        {" "}
+                        <span className="btn-icon">
+                          <i>{<FaMagnifyingGlass />}</i>
+                        </span>
+                        {/* {UI_CONFIG.BTN.QUERY} */}
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3}>Nenhum resultado encontrado</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <PaginationFooter
+            currentPage={currentPage}
+            pageSize={recordsPerPage}
+            totalElements={filteredData.length}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
       </div>
     </div>
   );

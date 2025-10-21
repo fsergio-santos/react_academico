@@ -1,9 +1,4 @@
-import {
-  useState,
-  type FocusEvent,
-  type FormEvent,
-  type MouseEvent,
-} from "react";
+import { useState, type FormEvent, type MouseEvent } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +17,9 @@ import { ROTA } from "../../services/router/Url";
 
 export default function CriarCidade() {
   // estado para controlar o movimento entre os inputs
-  const [touched, setTouched] = useState<boolean | null>(null);
+  const [touched, setTouched] = useState<
+    Partial<Record<keyof Cidade, boolean>>
+  >({});
   // estado para armazenar os dados do formulário cidade
   const [model, setModel] = useState<Cidade>(CIDADE.DADOS_INICIAIS);
   // Estado para armazenar os erros de validação
@@ -42,26 +39,25 @@ export default function CriarCidade() {
    */
   const handleChangeField = (name: keyof Cidade, value: string) => {
     // Atualiza o estado do modelo com o novo valor
-    setModel((prev) => ({ ...prev, [name]: value }));
-    // Limpa os erros do campo que está sendo editado
-    setErrors((prev) => ({
-      ...prev,
-      [name]: undefined,
-      [`${name}Mensagem`]: undefined,
-    }));
+    setModel((prev) => {
+      const update = { ...prev, [name]: value };
+
+      validateField(name, value);
+
+      return update;
+    });
+
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   /**
    * Valida um campo individualmente. Geralmente usado no evento onBlur.
    * @param name - O nome do campo a ser validado.
    */
-  const validateField = (
-    name: keyof Cidade,
-    e: FocusEvent<HTMLInputElement>
-  ) => {
+  const validateField = (name: keyof Cidade, value: string) => {
     let messages: string[] = [];
-    const value = model[name];
-    setTouched(true);
+
+    console.log("passando pelo validate ");
     // Lógica de validação específica para cada campo
     switch (name) {
       case CIDADE.FIELDS.CODIGO:
@@ -88,6 +84,8 @@ export default function CriarCidade() {
       [name]: messages.length > 0,
       [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
     }));
+
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   /**
@@ -134,11 +132,8 @@ export default function CriarCidade() {
    * função para estilizar o input conforme o seu estado, normal , validado, inválidado.
    */
   const getInputClass = (field: keyof Cidade): string => {
-    if (!errors) return "form-control app-label mt-2";
-
     const hasError = errors[field];
-    const wasTouched = touched; // ou touched[field] se for por campo
-
+    const wasTouched = touched[field]; // ou touched[field] se for por campo
     if (hasError) {
       return "form-control is-invalid app-label input-error mt-2";
     }
@@ -169,12 +164,13 @@ export default function CriarCidade() {
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
-      navigate(ROTA.CIDADE.LISTAR);
     } catch (error) {
       const mensagem = handleAxiosError(error);
       showAlert(mensagem, STATUS_TYPES.DANGER);
     } finally {
       setLoading(false);
+      navigate(ROTA.CIDADE.LISTAR);
+      setTouched({});
     }
   };
 
@@ -204,7 +200,9 @@ export default function CriarCidade() {
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.CODIGO, e.target.value)
               }
-              onBlur={(e) => validateField(CIDADE.FIELDS.CODIGO, e)}
+              onBlur={(e) =>
+                validateField(CIDADE.FIELDS.CODIGO, e.target.value)
+              }
               readOnly={false}
               disabled={false}
               autoComplete="off"
@@ -231,7 +229,7 @@ export default function CriarCidade() {
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.NOME, e.target.value)
               }
-              onBlur={(e) => validateField(CIDADE.FIELDS.NOME, e)}
+              onBlur={(e) => validateField(CIDADE.FIELDS.NOME, e.target.value)}
               readOnly={false}
               disabled={false}
               autoComplete="off"

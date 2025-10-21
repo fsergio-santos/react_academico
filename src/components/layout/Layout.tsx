@@ -1,3 +1,4 @@
+import { FaSignOutAlt } from "react-icons/fa";
 import { Link, Outlet } from "react-router-dom";
 import { DASHBOARD, ROTA } from "../../services/router/Url";
 import "./layout.css";
@@ -19,7 +20,8 @@ export default function Layout() {
               <b>Francisco</b>
             </span>
             <a href="#" className="btn btn-logout">
-              Logout
+              <FaSignOutAlt className="logout-icon"/>
+              <span className="logout-text">Logout</span>
             </a>
           </div>
         </header>

@@ -46,8 +46,8 @@ http.interceptors.response.use(
     const dedupKey = `${status}|${path}`;
     const now = Date.now();
 
-    if (error.config?.silent && !dedupStore.hasRecent(dedupKey, 3000)) {
-      dedupStore.mark(dedupKey, now);
+    if (!error.config?.silent && !deDuplicacaoErros.hasRecent(dedupKey, 3000)) {
+      deDuplicacaoErros.mark(dedupKey, now);
       AlertBus.emit({
         message: msg,
         variant: STATUS_TYPES.DANGER,
@@ -68,7 +68,13 @@ http.interceptors.response.use(
   }
 );
 
-const dedupStore = (() => {
+/*
+   deDuplicacaoErros tem como papel evitar que a mesma 
+   mensagem de erro apareça várias vezes para o usuário 
+   antiduplicacao
+*/
+
+const deDuplicacaoErros = (() => {
   const m = new Map<string, number>();
   return {
     hasRecent: (key: string, ttlMs: number) => {

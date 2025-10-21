@@ -12,3 +12,8 @@ export interface ErrosCidade {
   codCidadeMensagem?: string[];
   nomeCidadeMensagem?: string[];
 }
+
+export interface BuscarCidadePorIdProps {
+  cidade: Cidade | null;
+  errosCidade: ErrosCidade | null | undefined;
+}

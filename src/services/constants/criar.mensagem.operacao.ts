@@ -19,7 +19,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     POR_ID: {
-      ACAO: `Mostrar o cadastro de ${ENTITY_NAME} por um identificador único no sistema`,
+      ACAO: `Mostrar o cadastro de ${ENTITY_NAME}  no sistema`,
       SUCESSO: `O cadastro de ${ENTITY_NAME} foi localizado com sucesso no sistema`,
       ERRO: `O cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
       NAO_LOCALIZADO: `O código informado do cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
@@ -27,7 +27,7 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       FIELDS: `Há campos inválidos no cadastro de ${ENTITY_NAME}`,
     },
     EXCLUIR: {
-      ACAO: `Excluir o cadastro de ${ENTITY_NAME} por um identificador único no sistema`,
+      ACAO: `Excluir o cadastro de ${ENTITY_NAME} no sistema`,
       SUCESSO: `O cadastro de ${ENTITY_NAME} foi excluído com sucesso no sistema`,
       ERRO: `Falha na exclusão do cadastro de ${ENTITY_NAME} no sistema`,
       NAO_LOCALIZADO: `O código informado do cadastro de ${ENTITY_NAME} não foi localizado no sistema`,
