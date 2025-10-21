@@ -2,12 +2,15 @@ import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import Loading from "../../components/loading/Loading";
 import PaginationFooter from "../../components/pagination/PaginationFooter";
+import { useAlert } from "../../contexto/AlertContexto";
 import { AlertBus } from "../../services/alert/alert.service";
 import { apiGetCidades } from "../../services/cidade/api/api.cidade";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import type { Cidade } from "../../services/cidade/type/cidade";
 import {
+  SELECT_PAGE_SIZE,
   STATUS_TYPES,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
@@ -56,15 +59,19 @@ export default function ListarCidades() {
   // reagir as alterações na variável
   // renderiza -
   const [models, setModels] = useState<Cidade[] | null>(null);
+  // hook de mensagens do sistema
+  const { loading, setLoading } = useAlert();
 
   //hook - função - reagir, quando carregar a página
   //pela primeira vez, quando o array for vázio.
   useEffect(() => {
     async function getCidades() {
+      setLoading(true);
       const cidades = await buscarTodasCidades();
       if (cidades) {
         setModels(cidades);
       }
+      setLoading(false);
     }
     getCidades();
   }, []);
@@ -147,6 +154,7 @@ export default function ListarCidades() {
 
   return (
     <div className="display">
+      {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
         <div className="local_sistema">
           <h2>{CIDADE.TITULO.LISTA}</h2>
@@ -160,11 +168,11 @@ export default function ListarCidades() {
               className="form-select"
               aria-label="Quantidade de registros por página"
             >
-              <option value={5}>5 por página</option>
-              <option value={10}>10 por página</option>
-              <option value={15}>15 por página</option>
-              <option value={20}>20 por página</option>
-              <option value={25}>25 por página</option>
+              {SELECT_PAGE_SIZE.map((op) => (
+                <option key={op.value} value={op.value}>
+                  {op.label}
+                </option>
+              ))}
             </select>
             <input
               className="form-control"
@@ -189,7 +197,7 @@ export default function ListarCidades() {
         </div>
         <div id="no_more_table">
           <table className="table table-bordered table-striped cf">
-            <thead>
+            <thead className="cf">
               <tr>
                 <th onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}>
                   {CIDADE.LABEL.CODIGO_CIDADE}{" "}
@@ -199,7 +207,7 @@ export default function ListarCidades() {
                   {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
                 </th>
                 <th className="center actions" colSpan={3}>
-                  Ação
+                  {UI_CONFIG.BTN.ACTION}
                 </th>
               </tr>
             </thead>

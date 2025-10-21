@@ -28,6 +28,7 @@ export const UI_CONFIG = {
     SAVE: "Salvar",
     QUERY: "Consultar",
     UPDATE: "Salvar",
+    ACTION: "Ação",
   },
   ACTION_MODAL: {
     EDIT: `Tem certeza em atualizar o cadastro de `,
@@ -52,3 +53,17 @@ export const STATUS_TYPES = {
   SECONDARY: "secondary",
   UNDEFINED: "undefined",
 } as const;
+
+
+interface PageOption {
+  value: number;
+  label: string;
+}
+
+export const SELECT_PAGE_SIZE: PageOption[] = [
+  { value: 5, label: "5 por página" },
+  { value: 10, label: "10 por página" },
+  { value: 15, label: "15 por página" },
+  { value: 20, label: "20 por página" },
+  { value: 25, label: "25 por página" },
+];

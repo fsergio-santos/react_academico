@@ -150,8 +150,8 @@ export default function AtualizarCidade() {
   // useEffect hook para atualizar o estado dos atributos da cidade
   // ou atualizar o estado de erros existente no cadastro da cidade.
   useEffect(() => {
-    setLoading(true);
     async function getCidade() {
+      setLoading(true);
       const response = await buscarCidadePorId(Number(idCidade));
       if (response?.cidade) {
         setModel(response.cidade);
