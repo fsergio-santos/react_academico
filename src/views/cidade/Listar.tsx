@@ -1,155 +1,40 @@
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import Loading from "../../components/loading/Loading";
 import PaginationFooter from "../../components/pagination/PaginationFooter";
-import { AlertBus } from "../../services/alert/alert.service";
-import { apiGetCidades } from "../../services/cidade/api/api.cidade";
+import { useAlert } from "../../contexto/AlertContexto";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
-import type { Cidade } from "../../services/cidade/type/cidade";
+import { useListar } from "../../services/cidade/hooks/useListar";
 import {
-  STATUS_TYPES,
+  SELECT_PAGE_SIZE,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
-import { handleAxiosError } from "../../services/mensagens/error.sistema";
 import { ROTA } from "../../services/router/Url";
 
-type SortConfig = {
-  key: keyof Cidade;
-  direction: "asc" | "desc" | null;
-};
-
-const buscarTodasCidades = async (): Promise<Cidade[] | null> => {
-  // await axios
-  //   .get("http://localhost:8000/rest/sistema/cidade/listar")
-  //   .then((response: any) => {
-  //     setCidades(response.data.dados);
-  //   });
-  try {
-    const response = await apiGetCidades();
-    return response.data.dados;
-  } catch (error: any) {
-    const mensagem = handleAxiosError(error);
-    AlertBus.emit({
-      message: mensagem,
-      variant: STATUS_TYPES.DANGER,
-      duration: 5000,
-    });
-  }
-  return null;
-};
-
 export default function ListarCidades() {
-  // classificação da tabela pelas colunas existenstes no registro apresentado
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: CIDADE.FIELDS.NOME,
-    direction: "asc",
-  });
-  //número da página atual que ser exibida na tabela
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  // quantidade de registros em cada página exibida na tabela
-  const [recordsPerPage, setRecordsPerPage] = useState<number>(5);
-  // input - cidade que será filtrada no array de cidades e retornando
-  // todas as cidades coincidentes com termo pesquisado.
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  // useState = hook - gancho - função
-  // reagir as alterações na variável
-  // renderiza -
-  const [models, setModels] = useState<Cidade[] | null>(null);
+  const { loading } = useAlert();
 
-  //hook - função - reagir, quando carregar a página
-  //pela primeira vez, quando o array for vázio.
-  useEffect(() => {
-    async function getCidades() {
-      const cidades = await buscarTodasCidades();
-      if (cidades) {
-        setModels(cidades);
-      }
-    }
-    getCidades();
-  }, []);
-
-  const filteredData: Cidade[] = useMemo(() => {
-    return (models ?? []).filter((item: any) =>
-      Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [models, searchTerm]);
-
-  const handleSort = (key: keyof Cidade) => {
-    setSortConfig((currentConfig) => {
-      const isSameKey = currentConfig.key === key;
-
-      // Declara uma variável para o novo estado com o tipo explícito.
-      // Isso ajuda o TypeScript a entender o que estamos retornando.
-      let newConfig: SortConfig;
-
-      if (!isSameKey) {
-        // Se for uma nova coluna, sempre começa com 'asc'
-        newConfig = { key, direction: "asc" };
-      } else {
-        // Se for a mesma coluna, alterna entre os 3 estados
-        if (currentConfig.direction === "asc") {
-          newConfig = { key, direction: "desc" }; // de asc para desc
-        } else if (currentConfig.direction === "desc") {
-          newConfig = { key, direction: null }; // de desc para null (sem ordenação)
-        } else {
-          // de null (sem ordenação) de volta para asc
-          newConfig = { key, direction: "asc" };
-        }
-      }
-      return newConfig;
-    });
-  };
-
-  const sortedData = useMemo(() => {
-    if (!sortConfig.key) return filteredData;
-
-    const key = sortConfig.key; // Chave a ser ordenada
-    const direction = sortConfig.direction; // Direção da ordenação
-
-    return [...filteredData].sort((a, b) => {
-      if (a[key] < b[key]) {
-        return direction === "asc" ? -1 : 1;
-      }
-      if (a[key] > b[key]) {
-        return direction === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-  }, [filteredData, sortConfig]);
-
-  const totalPages = Math.ceil(filteredData.length / recordsPerPage);
-  const startIndex = (currentPage - 1) * recordsPerPage;
-  const currentRecords = sortedData.slice(
-    startIndex,
-    startIndex + recordsPerPage
-  );
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleRecordsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
-  const getSortIcon = (field: string) => {
-    if (sortConfig.key === field) {
-      return sortConfig.direction === "asc"
-        ? UI_CONFIG.ARROW_UP
-        : UI_CONFIG.ARROW_DOWN;
-    }
-    return "";
-  };
+  const {
+    currentPage,
+    recordsPerPage,
+    searchTerm,
+    filteredData,
+    totalPages,
+    currentRecords,
+    handleSort,
+    handlePageChange,
+    handleRecordsPerPageChange,
+    getSortIcon,
+    setSearchTerm,
+  } = useListar();
 
   return (
     <div className="display">
+      {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
         <div className="local_sistema">
-          <h2>{CIDADE.TITULO.LISTA}</h2>
+          <h2>{CIDADE.TITULO.LISTAR}</h2>
         </div>
         <div className="table-toolbar-container">
           <div className="table-toolbar-left">
@@ -160,11 +45,11 @@ export default function ListarCidades() {
               className="form-select"
               aria-label="Quantidade de registros por página"
             >
-              <option value={5}>5 por página</option>
-              <option value={10}>10 por página</option>
-              <option value={15}>15 por página</option>
-              <option value={20}>20 por página</option>
-              <option value={25}>25 por página</option>
+              {SELECT_PAGE_SIZE.map((op) => (
+                <option key={op.value} value={op.value}>
+                  {op.label}
+                </option>
+              ))}
             </select>
             <input
               className="form-control"
@@ -191,11 +76,17 @@ export default function ListarCidades() {
           <table className="table table-bordered table-striped cf">
             <thead>
               <tr>
-                <th onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}>
+                <th
+                  onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}
+                  className="table-sort-cursor"
+                >
                   {CIDADE.LABEL.CODIGO_CIDADE}{" "}
                   {getSortIcon(CIDADE.FIELDS.CODIGO)}
                 </th>
-                <th onClick={() => handleSort(CIDADE.FIELDS.NOME)}>
+                <th
+                  onClick={() => handleSort(CIDADE.FIELDS.NOME)}
+                  className="table-sort-cursor"
+                >
                   {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
                 </th>
                 <th className="center actions" colSpan={3}>

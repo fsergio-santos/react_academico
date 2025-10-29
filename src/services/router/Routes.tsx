@@ -6,7 +6,7 @@ import CriarCidade from "../../views/cidade/Criar";
 import ExcluirCidade from "../../views/cidade/Excluir";
 import ListarCidades from "../../views/cidade/Listar";
 import Dashboard from "../../views/Dashboard";
-import { DASHBOARD, ROTA, ROTA_SISTEMA } from "./Url";
+import { ROTA, ROTA_SISTEMA, URL_DASHBOARD } from "./Url";
 
 export const routes: RouteObject[] = [
   {
@@ -14,7 +14,7 @@ export const routes: RouteObject[] = [
     element: <Layout />,
     children: [
       {
-        path: DASHBOARD,
+        path: URL_DASHBOARD,
         element: <Dashboard />,
       },
       {

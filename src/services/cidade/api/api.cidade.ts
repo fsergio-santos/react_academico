@@ -56,6 +56,7 @@ export const apiDeleteCidade = async (
 // hooks/useApiCidade.ts
 
 export const useApiCidade = () => {
+  
   const getCidades = useCallback(apiGetCidades, []);
   const getCidade = useCallback(apiGetCidade, []);
   const postCidade = useCallback(apiPostCidade, []);

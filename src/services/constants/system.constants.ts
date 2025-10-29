@@ -14,9 +14,9 @@ export const REST_CONFIG = {
 export const UI_CONFIG = {
   BUTTON_SIZE: 30,
   BUTTON_SIZE_SHOW_MESSAGE: 30,
-  DEFAULT_USER_IMAGE: USER_IMAGE, // É mais comum importar imagens assim
+  DEFAULT_USER_IMAGE: USER_IMAGE,
   DEFAULT_THUMBNAIL_IMAGE: THUMBNAIL_IMAGE,
-  TOAST_DURATION: 5000, // Nome mais descritivo que TIME
+  TOAST_DURATION: 5000,
   ARROW_UP: "\u25B2", // ▲
   ARROW_DOWN: "\u25BC", // ▼
   ITEMS_PER_PAGE: 5,
@@ -52,3 +52,16 @@ export const STATUS_TYPES = {
   SECONDARY: "secondary",
   UNDEFINED: "undefined",
 } as const;
+
+interface PageOption {
+  value: number;
+  label: string;
+}
+
+export const SELECT_PAGE_SIZE: PageOption[] = [
+  { value: 5, label: "5 por página" },
+  { value: 10, label: "10 por página" },
+  { value: 15, label: "15 por página" },
+  { value: 20, label: "20 por página" },
+  { value: 25, label: "25 por página" },
+];

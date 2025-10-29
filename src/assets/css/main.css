@@ -441,7 +441,6 @@ h1 {
   display: inline-block;
 }
 
-
 /* definição para o botão de sucesso */
 .btn-success {
   color: var(--text-white);
@@ -1512,6 +1511,10 @@ td.actions {
 }
 .table thead tr th:last-child {
   border-top-right-radius: 8px;
+}
+
+.table-sort-cursor {
+  cursor: pointer;
 }
 
 /* ======= Tabela compacta ======= */

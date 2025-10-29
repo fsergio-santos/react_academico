@@ -1,7 +1,7 @@
 import { CIDADE } from "../cidade/constants/cidade.constants";
 
 export const ROTA_SISTEMA = "sistema";
-export const DASHBOARD = `/${ROTA_SISTEMA}/dashboard`;
+export const URL_DASHBOARD = `/${ROTA_SISTEMA}/dashboard`;
 export const URL_SALVAR_FOTO = "/foto/salvar";
 export const URL_DELETAR_FOTO = "/foto/excluir";
 

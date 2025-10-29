@@ -17,3 +17,8 @@ export interface BuscarCidadePorIdProps {
   cidade: Cidade | null;
   errosCidade: ErrosCidade | null | undefined;
 }
+
+export type SortConfig = {
+  key: keyof Cidade;
+  direction: "asc" | "desc" | null;
+};

@@ -26,7 +26,7 @@ export const CIDADE = {
   },
 
   TITULO: {
-    LISTA: `Lista de ${ENTITY_NAME}s`,
+    LISTAR: `Lista de ${ENTITY_NAME}s`,
     CRIAR: `Nova ${ENTITY_NAME}`,
     ATUALIZAR: `Atualizar ${ENTITY_NAME}`,
     EXCLUIR: `Excluir ${ENTITY_NAME}`,
