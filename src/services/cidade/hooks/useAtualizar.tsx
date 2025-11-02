@@ -1,21 +1,20 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../../contexto/AlertContexto";
-import { AlertBus } from "../../alert/alert.service";
 import { STATUS_TYPES } from "../../constants/system.constants";
 import { handleAxiosError } from "../../mensagens/error.sistema";
 import { ROTA } from "../../router/Url";
 import { useApiCidade } from "../api/api.cidade";
+import { CIDADE } from "../constants/cidade.constants";
+import type { Cidade, ErrosCidade } from "../type/cidade";
 import {
-  CIDADE,
-  fieldsCidade,
-  mapaCampoParaMensagem,
-} from "../constants/cidade.constants";
-import type {
-  BuscarCidadePorIdProps,
-  Cidade,
-  ErrosCidade,
-} from "../type/cidade";
+  buscarCidadePorId,
+  getInputClassParaForm,
+  setServerErrorsCidade,
+  validarCampo,
+  validarCamposVaziosCidade,
+  validarFormularioCompleto,
+} from "../utils/cidade.utils";
 
 export const useAtualizar = () => {
   // estado para controlar o movimento entre os inputs
@@ -62,15 +61,13 @@ export const useAtualizar = () => {
    */
   const handleChangeField = (name: keyof Cidade, value: string) => {
     // Atualiza o estado do modelo com o novo valor
-
-    setModel((prev) => {
-      const update = { ...prev, [name]: value };
-
-      validateField(name, value);
-
-      return update;
-    });
-
+    setModel((prev) => ({ ...prev, [name]: value }));
+    const messages = validarCampo(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: messages.length > 0,
+      [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
+    }));
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
@@ -79,41 +76,7 @@ export const useAtualizar = () => {
    * @returns 'true' se o formulário for válido, 'false' caso contrário.
    */
   const validarFormulario = (): boolean => {
-    const newErrors: ErrosCidade = {};
-    let isFormValid = true;
-
-    if (!model) {
-      isFormValid = false;
-      return isFormValid;
-    }
-
-    // Valida 'codCidade'
-    const codCidadeMessages = [];
-    if (!model.codCidade && model?.codCidade !== null)
-      codCidadeMessages.push(CIDADE.INPUT_ERROR.CODIGO.VALID);
-    if (model?.codCidade && typeof model.codCidade !== "string")
-      codCidadeMessages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
-    if (codCidadeMessages.length > 0) {
-      newErrors.codCidade = true;
-      newErrors.codCidadeMensagem = codCidadeMessages;
-      isFormValid = false;
-    }
-
-    // Valida 'nomeCidade'
-    const nomeMessages = [];
-    if (!model?.nomeCidade || model.nomeCidade.trim().length === 0)
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
-    if (model.nomeCidade.length > 0 && model.nomeCidade.length < 6)
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
-    if (model.nomeCidade.length > 100) {
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
-    }
-    if (nomeMessages.length > 0) {
-      newErrors.nomeCidade = true;
-      newErrors.nomeCidadeMensagem = nomeMessages;
-      isFormValid = false;
-    }
-
+    const { newErrors, isFormValid } = validarFormularioCompleto(model);
     setErrors(newErrors);
     return isFormValid;
   };
@@ -123,37 +86,12 @@ export const useAtualizar = () => {
    * @param name - O nome do campo a ser validado.
    */
   const validateField = (name: keyof Cidade, value: string) => {
-    let messages: string[] = [];
-
-    if (!model) return;
-
-    // Lógica de validação específica para cada campo
-    switch (name) {
-      case CIDADE.FIELDS.CODIGO:
-        if (!value) messages.push(CIDADE.INPUT_ERROR.CODIGO.BLANK);
-        if (value && typeof value !== "string")
-          messages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
-        break;
-      case CIDADE.FIELDS.NOME:
-        if (!value || String(value).trim().length === 0) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
-        }
-        if (String(value).length > 0 && String(value).length < 6) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
-        }
-        if (String(value).length > 100) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
-        }
-        break;
-    }
-
-    // Atualiza o estado de erros para o campo validado
+    const messages = validarCampo(name, value);
     setErrors((prev) => ({
       ...prev,
       [name]: messages.length > 0,
       [`${name}Mensagem`]: messages.length > 0 ? messages : undefined,
     }));
-
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
@@ -162,18 +100,7 @@ export const useAtualizar = () => {
    */
 
   const getInputClass = (field: keyof Cidade): string => {
-    const hasError = errors[field];
-    const wasTouched = touched; // ou touched[field] se for por campo
-
-    if (hasError) {
-      return "form-control is-invalid app-label input-error mt-2";
-    }
-
-    if (wasTouched && !hasError) {
-      return "form-control is-valid app-label input-valid mt-2";
-    }
-
-    return "form-control app-label mt-2";
+    return getInputClassParaForm(field, errors, touched);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -181,6 +108,10 @@ export const useAtualizar = () => {
     if (!idCidade || !model) {
       showAlert(CIDADE.OPERACAO.POR_ID.NAO_LOCALIZADO, STATUS_TYPES.DANGER);
       navigate(ROTA.CIDADE.LISTAR);
+      return;
+    }
+    if (!validarFormulario()) {
+      showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
       return;
     }
     setLoading(true);
@@ -210,106 +141,6 @@ export const useAtualizar = () => {
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     navigate(ROTA.CIDADE.LISTAR);
-  };
-
-  /**
-   *  função para renderizar os erros provenientes do servidor.
-   *
-   **/
-
-  const setServerErrorsCidade = (
-    serverErrors: Partial<Record<keyof Cidade, string[]>> | null
-  ): ErrosCidade | null => {
-    if (!serverErrors) {
-      return null;
-    }
-
-    const newErrors: ErrosCidade = {};
-
-    (Object.keys(serverErrors) as (keyof Cidade)[]).forEach((campo) => {
-      const mensagens = serverErrors[campo];
-
-      if (mensagens && mensagens.length > 0) {
-        newErrors[campo] = true;
-
-        const msgKey = `${String(campo)}Mensagem`;
-        (newErrors as any)[msgKey] = [mensagens];
-      }
-    });
-
-    return Object.keys(newErrors).length > 0 ? newErrors : null;
-  };
-
-  /**
-   * função para validar os campos vázios
-   * que retornaram do servidor em uma consulta
-   *
-   */
-
-  const validarCamposVaziosCidade = (
-    cidade: Cidade
-  ): Partial<Record<keyof Cidade, string[]>> | null => {
-    const erros: Partial<Record<keyof Cidade, string[]>> = {};
-
-    fieldsCidade.forEach((field) => {
-      const valor = cidade[field];
-
-      const isEmpty =
-        valor === undefined ||
-        valor === null ||
-        (typeof valor === "string" && valor.trim() === "");
-
-      if (isEmpty) {
-        const keyMessage = mapaCampoParaMensagem[field];
-        const mensagemErro = CIDADE.INPUT_ERROR[keyMessage]?.BLANK;
-        const mensagem =
-          mensagemErro ?? `O campo ${String(field)} é obrigatório`;
-
-        erros[field] = [mensagem];
-      }
-    });
-
-    return Object.keys(erros).length > 0 ? erros : null;
-  };
-
-  /***
-   *
-   * função para buscar a cidade pelo idCidade para
-   * depois fazer a alteração do registro se for necessário.
-   * @param idCidade = idCidade a ser pesquisada na tabela de cidade.
-   *
-   **/
-
-  const buscarCidadePorId = async (
-    idCidade: number
-  ): Promise<BuscarCidadePorIdProps | null> => {
-    let cidade: Cidade | null = null;
-    let errosCidade: ErrosCidade | null = null;
-    try {
-      const response = await getCidade(idCidade);
-      // const response = await axios.get(
-      //   `http://localhost:8000/rest/sistema/cidade/buscar/${idCidade}`
-      // );
-      if (response.data.dados) {
-        cidade = response.data.dados;
-        const errosValidacao = validarCamposVaziosCidade(response.data.dados);
-        if (errosValidacao) {
-          errosCidade = setServerErrorsCidade(errosValidacao);
-        }
-      }
-      return {
-        cidade,
-        errosCidade,
-      };
-    } catch (error: any) {
-      const mensagem = handleAxiosError(error);
-      AlertBus.emit({
-        message: mensagem,
-        variant: STATUS_TYPES.DANGER,
-        duration: 5000,
-      });
-    }
-    return null;
   };
 
   return {

@@ -7,6 +7,11 @@ import { ROTA } from "../../router/Url";
 import { useApiCidade } from "../api/api.cidade";
 import { CIDADE } from "../constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../type/cidade";
+import {
+  getInputClassParaForm,
+  validarCampo,
+  validarFormularioCompleto,
+} from "../utils/cidade.utils";
 
 export const useCriar = () => {
   const [touched, setTouched] = React.useState<
@@ -47,27 +52,7 @@ export const useCriar = () => {
    * @param name - O nome do campo a ser validado.
    */
   const validateField = (name: keyof Cidade, value: string) => {
-    let messages: string[] = [];
-
-    // Lógica de validação específica para cada campo
-    switch (name) {
-      case CIDADE.FIELDS.CODIGO:
-        if (!value) messages.push(CIDADE.INPUT_ERROR.CODIGO.BLANK);
-        if (value && typeof value !== "string")
-          messages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
-        break;
-      case CIDADE.FIELDS.NOME:
-        if (!value || String(value).trim().length === 0) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
-        }
-        if (String(value).length > 0 && String(value).length < 6) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
-        }
-        if (String(value).length > 100) {
-          messages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
-        }
-        break;
-    }
+    const messages = validarCampo(name, value);
 
     // Atualiza o estado de erros para o campo validado
     setErrors((prev) => ({
@@ -85,36 +70,7 @@ export const useCriar = () => {
    */
 
   const validarFormulario = (): boolean => {
-    const newErrors: ErrosCidade = {};
-    let isFormValid = true;
-
-    // Valida 'codCidade'
-    const codCidadeMessages = [];
-    if (!model.codCidade)
-      codCidadeMessages.push(CIDADE.INPUT_ERROR.CODIGO.VALID);
-    if (model.codCidade && typeof model.codCidade !== "string")
-      codCidadeMessages.push(CIDADE.INPUT_ERROR.CODIGO.STRING);
-    if (codCidadeMessages.length > 0) {
-      newErrors.codCidade = true;
-      newErrors.codCidadeMensagem = codCidadeMessages;
-      isFormValid = false;
-    }
-
-    // Valida 'nomeCidade'
-    const nomeMessages = [];
-    if (!model.nomeCidade || model.nomeCidade.trim().length === 0)
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.BLANK);
-    if (model.nomeCidade.length > 0 && model.nomeCidade.length < 6)
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.MIN_LEN);
-    if (model.nomeCidade.length > 100) {
-      nomeMessages.push(CIDADE.INPUT_ERROR.NOME.MAX_LEN);
-    }
-    if (nomeMessages.length > 0) {
-      newErrors.nomeCidade = true;
-      newErrors.nomeCidadeMensagem = nomeMessages;
-      isFormValid = false;
-    }
-
+    const { newErrors, isFormValid } = validarFormularioCompleto(model);
     setErrors(newErrors);
     return isFormValid;
   };
@@ -123,17 +79,7 @@ export const useCriar = () => {
    * função para estilizar o input conforme o seu estado, normal , validado, inválidado.
    */
   const getInputClass = (field: keyof Cidade): string => {
-    const hasError = errors[field];
-    const wasTouched = touched[field]; // ou touched[field] se for por campo
-    if (hasError) {
-      return "form-control is-invalid app-label input-error mt-2";
-    }
-
-    if (wasTouched && !hasError) {
-      return "form-control is-valid app-label input-valid mt-2";
-    }
-
-    return "form-control app-label mt-2";
+    return getInputClassParaForm(field, errors, touched);
   };
 
   /*
