@@ -65,3 +65,7 @@ export const SELECT_PAGE_SIZE: PageOption[] = [
   { value: 20, label: "20 por página" },
   { value: 25, label: "25 por página" },
 ];
+
+export const NAVIGATION_PAGE = {
+  VOLTAR: "Voltar",
+};

@@ -39,5 +39,9 @@ export function criarMensagensOperacao(ENTITY_NAME: string) {
       SUCESSO: `A consulta dos cadastros de ${ENTITY_NAME}s foi realizada com sucesso no sistema`,
       ERRO: `Falha na consulta dos cadastros de ${ENTITY_NAME}s no sistema`,
     },
+    VOLTAR: {
+      LISTAGEM: `Voltar para página de listagem de ${ENTITY_NAME}s`,
+      DASHBORAD: `Voltar para página principal `,
+    },
   };
 }

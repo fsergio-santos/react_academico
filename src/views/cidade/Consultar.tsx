@@ -1,68 +1,60 @@
 import { MdCancel } from "react-icons/md";
+import Input from "../../components/input/Input";
 import Loading from "../../components/loading/Loading";
-import MensagemErro from "../../components/mensagem/MensagemErro";
+import Navegacao from "../../components/navegacao/Navegacao";
 import { useAlert } from "../../contexto/AlertContexto";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import { useConsultar } from "../../services/cidade/hooks/useConsultar";
 import { UI_CONFIG } from "../../services/constants/system.constants";
+import { ROTA } from "../../services/router/Url";
 
 export default function ConsultarCidade() {
   // hook de mensagens do sistema
   const { loading } = useAlert();
 
-  const { model, errors, getInputClass, handleCancel } = useConsultar();
+  const { model, errors, handleCancel } = useConsultar();
 
   return (
     <div className="display">
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <h2>{CIDADE.TITULO.CONSULTAR}</h2>
+        <Navegacao
+          tituloPagina={CIDADE.TITULO.CONSULTAR}
+          link={ROTA.CIDADE.LISTAR}
+          acao={CIDADE.OPERACAO.VOLTAR.LISTAGEM}
+        />
         <div className="custom-divider"></div>
         <form>
-          <div className="mb-1 mt-2">
-            <label htmlFor="codCidade" className="app-label">
-              {CIDADE.LABEL.CODIGO_CIDADE}:
-            </label>
-          </div>
-          <div className="input-group">
-            <input
+          <div className="mt-2">
+            <Input
+              // Props de Identificação e Rótulo
+              label={`${CIDADE.LABEL.CODIGO_CIDADE}:`}
               id={CIDADE.FIELDS.CODIGO}
               name={CIDADE.FIELDS.CODIGO}
-              className={getInputClass(CIDADE.FIELDS.CODIGO)}
               defaultValue={model?.codCidade ?? ""}
               readOnly={true}
               disabled={false}
+              autoComplete="off"
+              error={errors.codCidade}
+              errorMessages={errors.codCidadeMensagem}
             />
-            {errors?.codCidade && (
-              <MensagemErro
-                error={errors.codCidade}
-                mensagem={errors.codCidadeMensagem}
-              />
-            )}
           </div>
-
-          <div className="mb-1 mt-4">
-            <label htmlFor="nomeCidade" className="app-label">
-              {CIDADE.LABEL.NOME_CIDADE}:
-            </label>
-          </div>
-          <div className="input-group">
-            <input
+          <div className="mt-4">
+            <Input
+              // Props de Identificação e Rótulo
+              label={`${CIDADE.LABEL.NOME_CIDADE}:`}
               id={CIDADE.FIELDS.NOME}
               name={CIDADE.FIELDS.NOME}
-              className={getInputClass(CIDADE.FIELDS.NOME)}
               defaultValue={model?.nomeCidade ?? ""}
               readOnly={true}
               disabled={false}
               autoComplete="off"
+              // Props de Validação (o Input cuida da exibição)
+              error={errors.nomeCidade}
+              errorMessages={errors.nomeCidadeMensagem}
             />
-            {errors?.nomeCidade && (
-              <MensagemErro
-                error={errors.nomeCidade}
-                mensagem={errors.nomeCidadeMensagem}
-              />
-            )}
           </div>
+
           <div className="btn-content mt-4">
             <div className="btn-wrapper">
               <button

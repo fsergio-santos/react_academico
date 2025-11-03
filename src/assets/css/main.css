@@ -694,14 +694,14 @@ h1 {
   color: var(--link-color);
   background-color: transparent;
   border-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
   box-shadow: 0 0 0 #000;
 }
 
 .btn-link:hover {
   color: var(--link-hover);
   border-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .btn-link:focus-visible {

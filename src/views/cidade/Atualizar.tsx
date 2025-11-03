@@ -1,8 +1,9 @@
 import { FaSave } from "react-icons/fa";
 import { MdBrowserUpdated, MdCancel } from "react-icons/md";
+import Input from "../../components/input/Input";
 import Loading from "../../components/loading/Loading";
-import MensagemErro from "../../components/mensagem/MensagemErro";
 import useMessageDialog from "../../components/modal/Modal";
+import Navegacao from "../../components/navegacao/Navegacao";
 import { useAlert } from "../../contexto/AlertContexto";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 import { useAtualizar } from "../../services/cidade/hooks/useAtualizar";
@@ -10,6 +11,7 @@ import {
   STATUS_TYPES,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
+import { ROTA } from "../../services/router/Url";
 
 export default function AtualizarCidade() {
   // hook para exibir mensagens de alerta para o usuário
@@ -23,7 +25,6 @@ export default function AtualizarCidade() {
     handleChangeField,
     validarFormulario,
     validateField,
-    getInputClass,
     handleSubmit,
     handleCancel,
   } = useAtualizar();
@@ -59,63 +60,56 @@ export default function AtualizarCidade() {
         iconCancel={<MdCancel />}
       />
       <div className="card animated fadeInDown">
-        <h2>{CIDADE.TITULO.ATUALIZAR}</h2>
+        <Navegacao
+          tituloPagina={CIDADE.TITULO.ATUALIZAR}
+          link={ROTA.CIDADE.LISTAR}
+          acao={CIDADE.OPERACAO.VOLTAR.LISTAGEM}
+        />
         <div className="custom-divider"></div>
         <form onSubmit={handleBeforeSumit}>
-          <div className="mb-2 mt-2">
-            <label htmlFor="codCidade" className="app-label">
-              {CIDADE.LABEL.CODIGO_CIDADE}:
-            </label>
-          </div>
-          <div className="input-group">
-            <input
+          <div className="mt-2">
+            <Input
+              // Props de Identificação e Rótulo
+              label={`${CIDADE.LABEL.CODIGO_CIDADE}:`}
               id={CIDADE.FIELDS.CODIGO}
               name={CIDADE.FIELDS.CODIGO}
-              className={getInputClass(CIDADE.FIELDS.CODIGO)}
-              value={model?.codCidade ?? ""}
+              // Props de Valor e Handlers
+              value={model.codCidade}
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.CODIGO, e.target.value)
               }
               onBlur={(e) =>
                 validateField(CIDADE.FIELDS.CODIGO, e.target.value)
               }
+              // Props Nativas Repassadas
               readOnly={false}
               disabled={false}
               autoComplete="off"
+              // Props de Validação (o Input cuida da exibição)
+              error={errors.codCidade}
+              errorMessages={errors.codCidadeMensagem}
             />
-            {errors?.codCidade && (
-              <MensagemErro
-                error={errors?.codCidade}
-                mensagem={errors?.codCidadeMensagem}
-              />
-            )}
           </div>
-
-          <div className="mb-2 mt-4">
-            <label htmlFor="nomeCidade" className="app-label">
-              {CIDADE.LABEL.NOME_CIDADE}:
-            </label>
-          </div>
-          <div className="input-group">
-            <input
+          <div className="mt-4">
+            <Input
+              // Props de Identificação e Rótulo
+              label={`${CIDADE.LABEL.NOME_CIDADE}:`}
               id={CIDADE.FIELDS.NOME}
               name={CIDADE.FIELDS.NOME}
-              className={getInputClass(CIDADE.FIELDS.NOME)}
-              value={model?.nomeCidade ?? ""}
+              // Props de Valor e Handlers
+              value={model.nomeCidade}
               onChange={(e) =>
                 handleChangeField(CIDADE.FIELDS.NOME, e.target.value)
               }
               onBlur={(e) => validateField(CIDADE.FIELDS.NOME, e.target.value)}
+              // Props Nativas Repassadas
               readOnly={false}
               disabled={false}
               autoComplete="off"
+              // Props de Validação (o Input cuida da exibição)
+              error={errors.nomeCidade}
+              errorMessages={errors.nomeCidadeMensagem}
             />
-            {errors?.nomeCidade && (
-              <MensagemErro
-                error={errors?.nomeCidade}
-                mensagem={errors?.nomeCidadeMensagem}
-              />
-            )}
           </div>
           <div className="btn-content mt-4">
             <div className="btn-wrapper">

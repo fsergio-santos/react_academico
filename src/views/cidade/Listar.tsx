@@ -2,6 +2,7 @@ import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
+import Navegacao from "../../components/navegacao/Navegacao";
 import PaginationFooter from "../../components/pagination/PaginationFooter";
 import { useAlert } from "../../contexto/AlertContexto";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
@@ -10,7 +11,7 @@ import {
   SELECT_PAGE_SIZE,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
-import { ROTA } from "../../services/router/Url";
+import { ROTA, URL_DASHBOARD } from "../../services/router/Url";
 
 export default function ListarCidades() {
   const { loading } = useAlert();
@@ -33,9 +34,11 @@ export default function ListarCidades() {
     <div className="display">
       {loading ? <Loading /> : null}
       <div className="card animated fadeInDown">
-        <div className="local_sistema">
-          <h2>{CIDADE.TITULO.LISTAR}</h2>
-        </div>
+        <Navegacao
+          tituloPagina={CIDADE.TITULO.LISTAR}
+          link={URL_DASHBOARD}
+          acao={CIDADE.OPERACAO.VOLTAR.DASHBORAD}
+        />
         <div className="table-toolbar-container">
           <div className="table-toolbar-left">
             <select
