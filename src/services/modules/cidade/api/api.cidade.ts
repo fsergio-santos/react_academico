@@ -1,8 +1,8 @@
 import type { AxiosResponse } from "axios";
 import { useCallback } from "react";
-import { http } from "../../axios/config.axios";
-import { ROTA } from "../../router/Url";
-import type { MensagemServidor } from "../../types/mensage.servidor";
+import { http } from "../../../axios/config.axios";
+import { ROTA } from "../../../router/Url";
+import type { MensagemServidor } from "../../../types/mensage.servidor";
 import type { Cidade } from "../type/cidade";
 
 export const apiGetCidades = async (): Promise<
@@ -56,7 +56,6 @@ export const apiDeleteCidade = async (
 // hooks/useApiCidade.ts
 
 export const useApiCidade = () => {
-  
   const getCidades = useCallback(apiGetCidades, []);
   const getCidade = useCallback(apiGetCidade, []);
   const postCidade = useCallback(apiPostCidade, []);

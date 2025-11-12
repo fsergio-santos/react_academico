@@ -5,12 +5,12 @@ import { NAVIGATION_PAGE } from "../../services/constants/system.constants";
 type NavegacaoProps = {
   tituloPagina: string;
   link: string;
-  acao: string,
+  acao: string;
 };
 
 const Navegacao = ({ tituloPagina, link, acao }: NavegacaoProps) => {
   return (
-    <div className="local_sistema">
+    <div className="local_sistema mt-3">
       <h2>{tituloPagina}</h2>
       <Link to={link} className="btn btn-link" title={acao}>
         <i>

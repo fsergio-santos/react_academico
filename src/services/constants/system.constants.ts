@@ -1,18 +1,52 @@
 // src/constants.ts ou src/config/constants.ts
 
+import USER_IMAGE from "../../assets/img/avatar.png";
 import THUMBNAIL_IMAGE from "../../assets/img/thumbnail.avatar.png";
-import USER_IMAGE from "../../assets/img/user.png";
 
 // --- Configurações da API e Servidor ---
 export const REST_CONFIG = {
   BASE_URL: "http://localhost:8000/rest",
   URL_IMAGEM: "http://localhost:8000/rest/foto/f/",
   URL_IMAGEM_THUMBNAIL: "http://localhost:8000/rest/foto/f/thumbnail.",
+  USER_IMAGE,
+  THUMBNAIL_IMAGE,
+};
+
+type ButtonType = "button" | "submit";
+
+interface ButtonConfig {
+  NEW: string;
+  EDIT: string;
+  DELETE: string;
+  CANCEL: string;
+  SAVE: string;
+  QUERY: string;
+  UPDATE: string;
+  SELECT: string;
+  TYPE: {
+    SUBMIT: ButtonType;
+    BUTTON: ButtonType;
+  };
+}
+
+export const BTN: ButtonConfig = {
+  NEW: "Novo",
+  EDIT: "Atualizar",
+  DELETE: "Excluir",
+  CANCEL: "Cancelar",
+  SAVE: "Salvar",
+  QUERY: "Consultar",
+  UPDATE: "Salvar",
+  SELECT: "Selecionar",
+  TYPE: {
+    SUBMIT: "submit",
+    BUTTON: "button",
+  },
 };
 
 // --- Configurações de UI e Comportamento ---
 export const UI_CONFIG = {
-  BUTTON_SIZE: 30,
+  BUTTON_SIZE: 18,
   BUTTON_SIZE_SHOW_MESSAGE: 30,
   DEFAULT_USER_IMAGE: USER_IMAGE,
   DEFAULT_THUMBNAIL_IMAGE: THUMBNAIL_IMAGE,
@@ -20,15 +54,7 @@ export const UI_CONFIG = {
   ARROW_UP: "\u25B2", // ▲
   ARROW_DOWN: "\u25BC", // ▼
   ITEMS_PER_PAGE: 5,
-  BTN: {
-    NEW: "Novo",
-    EDIT: "Atualizar",
-    DELETE: "Excluir",
-    CANCEL: "Cancelar",
-    SAVE: "Salvar",
-    QUERY: "Consultar",
-    UPDATE: "Salvar",
-  },
+
   ACTION_MODAL: {
     EDIT: `Tem certeza em atualizar o cadastro de `,
     DELETE: `Tem certeza em excluir o cadastro existente de `,
@@ -37,6 +63,8 @@ export const UI_CONFIG = {
 
 // --- Validações e Regras de Negócio ---
 export const VALIDATION_RULES = {
+  STRING: "",
+  ZERO_LENGHT: 0,
   PASSWORD_MIN_LENGTH: 6,
   EMAIL_REGEX:
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -51,6 +79,7 @@ export const STATUS_TYPES = {
   PRIMARY: "primary",
   SECONDARY: "secondary",
   UNDEFINED: "undefined",
+  CANCEL: "cancel",
 } as const;
 
 interface PageOption {
@@ -68,4 +97,28 @@ export const SELECT_PAGE_SIZE: PageOption[] = [
 
 export const NAVIGATION_PAGE = {
   VOLTAR: "Voltar",
+  ASC: "asc",
+  DESC: "desc",
 };
+
+export const PLACEHOLDER = {
+  SEARCH: "Pesquisar",
+};
+
+export const TipoUsuarioEnum = {
+  ALUNO: "1",
+  DESCRICAO_ALUNO: "Aluno",
+  PROFESSOR: "2",
+  DESCRICAO_PROFESSOR: "Professor",
+} as const;
+
+export const TIPO_USUARIO = [
+  {
+    value: TipoUsuarioEnum.ALUNO,
+    name: TipoUsuarioEnum.DESCRICAO_ALUNO,
+  },
+  {
+    value: TipoUsuarioEnum.PROFESSOR,
+    name: TipoUsuarioEnum.DESCRICAO_PROFESSOR,
+  },
+];

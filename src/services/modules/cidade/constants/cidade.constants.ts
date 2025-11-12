@@ -1,4 +1,4 @@
-import { criarMensagensOperacao } from "../../constants/criar.mensagem.operacao";
+import { criarMensagensOperacao } from "../../../constants/criar.mensagem.operacao";
 import type { Cidade } from "../type/cidade";
 
 const ENTITY_NAME = "Cidade";
@@ -23,6 +23,7 @@ export const CIDADE = {
   LABEL: {
     CODIGO_CIDADE: "Código",
     NOME_CIDADE: "Nome",
+    ACAO: "Ação",
   },
 
   TITULO: {
@@ -31,6 +32,16 @@ export const CIDADE = {
     ATUALIZAR: `Atualizar ${ENTITY_NAME}`,
     EXCLUIR: `Excluir ${ENTITY_NAME}`,
     CONSULTAR: `Consultar ${ENTITY_NAME}`,
+    PESQUISAR: `Pesquisar ${ENTITY_NAME}`,
+  },
+
+  ACTION_TYPES: {
+    LISTAR: "ACTION_LISTAR",
+    CRIAR: "ACTION_CRIAR",
+    ATUALIZAR: "ACTION_ATUALIZAR",
+    EXCLUIR: "ACTION_EXCLUIR",
+    CONSULTAR: "ACTION_CONSULTAR",
+    PESQUISAR: "ACTION_PESQUIAR",
   },
 
   INPUT_ERROR: {

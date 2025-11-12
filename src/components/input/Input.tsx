@@ -10,6 +10,8 @@ type CustomInputProps = {
   name?: string;
   Icon?: ElementType; // Ícone para o input group
   label?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
 };
 
 // Props de Validação
@@ -27,7 +29,10 @@ type InputProps = CustomInputProps &
   ValidationProps &
   // Omitimos 'id' e 'name' das props nativas, pois já as definimos
   // em CustomInputProps para melhor controle.
-  Omit<ComponentPropsWithoutRef<"input">, "id" | "name">;
+  Omit<
+    ComponentPropsWithoutRef<"input">,
+    "id" | "name" | "readOnly" | "disabled"
+  >;
 
 /**
  * Componente Input genérico e acessível.
@@ -50,8 +55,9 @@ const Input = memo(
     Icon,
     type = "text", // Valor padrão para 'type'
     required = false, // Valor padrão para 'required'
-
-    // Props de Validação
+    readOnly = false,
+    disabled = false,
+    autoComplete = "off",
     error,
     errorMessages = [],
     touched: touchedProp, // Renomeado para evitar conflito
@@ -98,7 +104,7 @@ const Input = memo(
     const handleBlur = useCallback(
       (e: FocusEvent<HTMLInputElement>) => {
         // Se não for 'readOnly' ou 'disabled'
-        if (!rest.readOnly && !rest.disabled) {
+        if (!readOnly && !disabled) {
           // 1. Chama o onBlur original (se existir)
           onBlur?.(e);
 
@@ -111,7 +117,7 @@ const Input = memo(
           onTouchedChange?.(true);
         }
       },
-      [rest.readOnly, rest.disabled, onBlur, touchedProp, onTouchedChange]
+      [readOnly, disabled, onBlur, touchedProp, onTouchedChange]
     );
 
     // --- Classes CSS ---
@@ -167,13 +173,18 @@ const Input = memo(
         </div>
 
         {/* === Mensagens de Erro === */}
-        {showErrors && (
-          <ul id={errorId} className="invalid-feedback d-block" role="alert">
-            {errorMessages.map((msg, idx) => (
-              <li key={idx}>{msg}</li>
-            ))}
-          </ul>
-        )}
+        
+        <ul
+          id={errorId}
+          className={`invalid-feedback d-block error-container ${
+            showErrors ? "has-error" : ""
+          }`}
+          role="alert"
+        >
+        {showErrors
+          ? errorMessages.map((msg, idx) => <li key={idx}>{msg}</li>)
+          : <li>&nbsp;</li> /* espaço reservado */}
+      </ul>
       </>
     );
   }

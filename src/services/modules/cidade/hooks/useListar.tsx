@@ -1,12 +1,14 @@
 import React, { useMemo, type ChangeEvent } from "react";
-import { useAlert } from "../../../contexto/AlertContexto";
-import { STATUS_TYPES, UI_CONFIG } from "../../constants/system.constants";
-import { handleAxiosError } from "../../mensagens/error.sistema";
+import { useAlert } from "../../../../contexto/AlertContexto";
+import {
+  NAVIGATION_PAGE,
+  STATUS_TYPES,
+  UI_CONFIG,
+} from "../../../constants/system.constants";
+import { handleAxiosError } from "../../../mensagens/error.sistema";
 import { useApiCidade } from "../api/api.cidade";
 import { CIDADE } from "../constants/cidade.constants";
 import type { Cidade, SortConfig } from "../type/cidade";
-
-
 
 //hook para tratar o acesso aos dados de cidade.
 export const useListar = () => {
@@ -96,10 +98,10 @@ export const useListar = () => {
 
     return [...filteredData].sort((a, b) => {
       if (a[key] < b[key]) {
-        return direction === "asc" ? -1 : 1;
+        return direction === NAVIGATION_PAGE.ASC ? -1 : 1;
       }
       if (a[key] > b[key]) {
-        return direction === "asc" ? 1 : -1;
+        return direction === NAVIGATION_PAGE.ASC ? 1 : -1;
       }
       return 0;
     });
@@ -142,6 +144,5 @@ export const useListar = () => {
     handleRecordsPerPageChange,
     getSortIcon,
     setSearchTerm,
-
   };
 };

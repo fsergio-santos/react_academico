@@ -1,4 +1,5 @@
-import { CIDADE } from "../cidade/constants/cidade.constants";
+import { CIDADE } from "../modules/cidade/constants/cidade.constants";
+import { USUARIO } from "../modules/usuario/constants/usuario.constants";
 
 export const ROTA_SISTEMA = "sistema";
 export const URL_DASHBOARD = `/${ROTA_SISTEMA}/dashboard`;
@@ -24,6 +25,7 @@ function gerarRotasSistema(entity: string) {
 
 export const ROTA = {
   CIDADE: gerarRotasSistema(CIDADE.ALIAS),
+  USUARIO: gerarRotasSistema(USUARIO.ALIAS),
 };
 
 const ROTA_AUTH = "auth";

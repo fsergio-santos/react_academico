@@ -1,5 +1,6 @@
 import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
 //import Button from '../form/Button';
+import { BTN } from "../../services/constants/system.constants";
 import "./modal.css";
 
 type MessageDialogProps = {
@@ -69,14 +70,20 @@ const useMessageDialog = () => {
                 className={`btn btn-${variant}`}
                 onClick={handleSave}
               >
-                {iconConfirm} {label}
+                <span className="btn-icon">
+                  <i>{iconConfirm}</i>
+                </span>
+                <span className="btn-label">{label}</span>
               </button>
               <button
                 type="button"
-                className="btn btn-warning"
+                className="btn btn-cancel"
                 onClick={closeModal}
               >
-                {iconCancel} Cancelar
+                <span className="btn-icon">
+                  <i>{iconCancel}</i>
+                </span>
+                <span className="btn-label">{BTN.CANCEL}</span>
               </button>
             </div>
           </div>

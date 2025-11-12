@@ -1,8 +1,8 @@
 // hooks/cidade/cidade.utils.ts
 
-import { AlertBus } from "../../alert/alert.service";
-import { STATUS_TYPES } from "../../constants/system.constants";
-import { handleAxiosError } from "../../mensagens/error.sistema";
+import { AlertBus } from "../../../alert/alert.service";
+import { STATUS_TYPES } from "../../../constants/system.constants";
+import { handleAxiosError } from "../../../mensagens/error.sistema";
 import { apiGetCidade } from "../api/api.cidade";
 import {
   CIDADE,

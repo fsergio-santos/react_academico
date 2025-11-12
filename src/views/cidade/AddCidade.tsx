@@ -1,79 +1,77 @@
-import {
-  MdBrowserUpdated,
-  MdCancel,
-  MdOutlineBrowserUpdated,
-} from "react-icons/md";
+import React from "react";
+import { FaSave } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
 import Button from "../../components/button/Button";
 import Card from "../../components/card/card";
 import Input from "../../components/input/Input";
 import Loading from "../../components/loading/Loading";
-import useMessageDialog from "../../components/modal/Modal";
-import Navegacao from "../../components/navegacao/Navegacao";
 import { useAlert } from "../../contexto/AlertContexto";
 import {
   BTN,
   STATUS_TYPES,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
+import { handleAxiosError } from "../../services/mensagens/error.sistema";
+import { useApiCidade } from "../../services/modules/cidade/api/api.cidade";
 import { CIDADE } from "../../services/modules/cidade/constants/cidade.constants";
-import { useAtualizar } from "../../services/modules/cidade/hooks/useAtualizar";
-import { ROTA } from "../../services/router/Url";
+import { useCriar } from "../../services/modules/cidade/hooks/useCriar";
+import type { Cidade } from "../../services/modules/cidade/type/cidade";
 
-export default function AtualizarCidade() {
-  // hook para exibir mensagens de alerta para o usuário
-  const { openModal, MessageDialog } = useMessageDialog();
-  // hook de mensagens do sistema
-  const { loading, showAlert } = useAlert();
-  //hook com as regras para atualização da cidade
-  const {
-    model,
-    errors,
-    handleChangeField,
-    validarFormulario,
-    validateField,
-    handleSubmit,
-    handleCancel,
-  } = useAtualizar();
+interface AddCidadeProps {
+  onClose: () => void;
+  //onSelect: (cidade: Cidade) => void;
+}
 
-  /*
-   * handleSubmit
-   * função que executa a validação geral dos dados e envia os formulário JSON
-   * para o servidor nestjs. nest_academico através da API.
-   *
-   */
+export default function AddCidade({ onClose }: AddCidadeProps) {
+  const [touched, setTouched] = React.useState<
+    Partial<Record<keyof Cidade, boolean>>
+  >({});
+  const { postCidade } = useApiCidade();
+  const { loading, setLoading, showAlert } = useAlert();
+  //hook com as regras para criação do registro da cidade
+  const { model, errors, validarFormulario, handleChangeField, validateField } =
+    useCriar();
 
-  const handleBeforeSumit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!validarFormulario()) {
-      showAlert(CIDADE.OPERACAO.ATUALIZAR.ERRO, STATUS_TYPES.DANGER);
-      return;
+      showAlert(CIDADE.OPERACAO.CRIAR.ERRO, STATUS_TYPES.DANGER);
     }
-
-    openModal();
+    try {
+      const response = await postCidade(model);
+      const { mensagem } = response.data;
+      if (mensagem) {
+        showAlert(mensagem, STATUS_TYPES.SUCCESS);
+      }
+    } catch (error) {
+      const mensagem = handleAxiosError(error);
+      showAlert(mensagem, STATUS_TYPES.DANGER);
+    } finally {
+      setLoading(false);
+      setTouched({});
+    }
   };
 
   return (
     <div className="container">
       <div className="display">
         {loading ? <Loading /> : null}
-        <MessageDialog
-          title={`${BTN.EDIT} ${CIDADE.ENTITY}`}
-          body={`${UI_CONFIG.ACTION_MODAL.EDIT}${CIDADE.ENTITY}`}
-          label={BTN.EDIT}
-          onSave={handleSubmit}
-          variant={STATUS_TYPES.DANGER}
-          iconConfirm={<MdBrowserUpdated />}
-          iconCancel={<MdCancel />}
-        />
         <Card>
-          <Navegacao
-            tituloPagina={CIDADE.TITULO.ATUALIZAR}
-            link={ROTA.CIDADE.LISTAR}
-            acao={CIDADE.OPERACAO.VOLTAR.LISTAGEM}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h2 className="mb-4">{CIDADE.TITULO.CRIAR}</h2>
+            <button onClick={onClose} title="Fechar" className="btn-close">
+              &times;
+            </button>
+          </div>
           <div className="custom-divider"></div>
-          <form onSubmit={handleBeforeSumit}>
+          <form onSubmit={handleSubmit}>
             <div className="mt-2">
               <Input
                 // Props de Identificação e Rótulo
@@ -88,6 +86,10 @@ export default function AtualizarCidade() {
                 onBlur={(e) =>
                   validateField(CIDADE.FIELDS.CODIGO, e.target.value)
                 }
+                // Props Nativas Repassadas
+                readOnly={false}
+                disabled={false}
+                autoComplete="off"
                 // Props de Validação (o Input cuida da exibição)
                 error={errors.codCidade}
                 errorMessages={errors.codCidadeMensagem}
@@ -107,6 +109,8 @@ export default function AtualizarCidade() {
                 onBlur={(e) =>
                   validateField(CIDADE.FIELDS.NOME, e.target.value)
                 }
+                // Props Nativas Repassadas
+                readOnly={true}
                 // Props de Validação (o Input cuida da exibição)
                 error={errors.nomeCidade}
                 errorMessages={errors.nomeCidadeMensagem}
@@ -117,20 +121,18 @@ export default function AtualizarCidade() {
               <div className="btn-wrapper">
                 <Button
                   type={BTN.TYPE.SUBMIT}
-                  title={CIDADE.OPERACAO.ATUALIZAR.ACAO}
-                  className="btn btn-edit"
-                  icon={
-                    <MdOutlineBrowserUpdated size={UI_CONFIG.BUTTON_SIZE} />
-                  }
+                  title={CIDADE.OPERACAO.CRIAR.ACAO}
+                  className="btn btn-add"
+                  icon={<FaSave size={UI_CONFIG.BUTTON_SIZE} />}
                 >
-                  {BTN.UPDATE}
+                  {BTN.SAVE}
                 </Button>
               </div>
               <div className="btn-wrapper">
                 <Button
                   type={BTN.TYPE.BUTTON}
-                  title={CIDADE.OPERACAO.ATUALIZAR.CANCELAR}
-                  onClick={handleCancel}
+                  title={CIDADE.OPERACAO.CRIAR.CANCELAR}
+                  onClick={onClose}
                   className="btn btn-cancel"
                   icon={<MdCancel size={UI_CONFIG.BUTTON_SIZE} />}
                 >

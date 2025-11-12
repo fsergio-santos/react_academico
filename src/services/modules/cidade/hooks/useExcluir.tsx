@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAlert } from "../../../contexto/AlertContexto";
-import { STATUS_TYPES } from "../../constants/system.constants";
-import { handleAxiosError } from "../../mensagens/error.sistema";
-import { ROTA } from "../../router/Url";
+import { useAlert } from "../../../../contexto/AlertContexto";
+import { STATUS_TYPES } from "../../../constants/system.constants";
+import { handleAxiosError } from "../../../mensagens/error.sistema";
+import { ROTA } from "../../../router/Url";
 import { useApiCidade } from "../api/api.cidade";
 import { CIDADE } from "../constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../type/cidade";
@@ -65,12 +65,12 @@ export const useExcluir = () => {
       if (mensagem) {
         showAlert(mensagem, STATUS_TYPES.SUCCESS);
       }
+      navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
       const mensagem = handleAxiosError(error);
       showAlert(mensagem, STATUS_TYPES.DANGER);
     } finally {
       setLoading(false);
-      navigate(ROTA.CIDADE.LISTAR);
     }
   };
 

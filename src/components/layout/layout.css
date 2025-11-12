@@ -171,7 +171,7 @@
 }
 
 /* janela ao centro da tela */
-.card {
+/* .card {
   width: 70%;
   max-width: 100%;
   min-height: 30%;
@@ -182,28 +182,7 @@
   margin-bottom: 1rem;
   margin-top: 0.5rem;
   animation: fadeInDown 0.3s ease;
-}
-
-
-@media (max-width: 600px) {
-  .card {
-    width: 100%;
-    padding: 1rem;
-  }
-
-  .btn-content {
-    flex-direction: column;
-  }
-
-  .btn-wrapper {
-    width: 100%;
-  }
-
-  input,
-  label {
-    font-size: 0.95rem;
-  }
-}
+} */
 
 /* Login */
 
@@ -244,7 +223,6 @@
   text-decoration: none;
 }
 
-
 .btn-logout {
   display: flex;
   align-items: center;
@@ -255,7 +233,9 @@
   border-radius: 6px;
   text-decoration: none;
   font-weight: 500;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
   cursor: pointer;
 }
 
@@ -299,4 +279,3 @@
     font-size: 1.6rem;
   }
 }
-

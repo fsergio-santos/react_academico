@@ -10,13 +10,15 @@ import { useAlert } from "../../contexto/AlertContexto";
 import {
   BTN,
   SELECT_PAGE_SIZE,
+  TipoUsuarioEnum,
   UI_CONFIG,
 } from "../../services/constants/system.constants";
-import { CIDADE } from "../../services/modules/cidade/constants/cidade.constants";
-import { useListar } from "../../services/modules/cidade/hooks/useListar";
+import { USUARIO } from "../../services/modules/usuario/constants/usuario.constants";
+
+import { useListar } from "../../services/modules/usuario/hooks/useListar";
 import { ROTA, URL_DASHBOARD } from "../../services/router/Url";
 
-export default function ListarCidades() {
+export default function ListarUsuarios() {
   const { loading } = useAlert();
 
   const {
@@ -39,9 +41,9 @@ export default function ListarCidades() {
         {loading ? <Loading /> : null}
         <Card>
           <Navegacao
-            tituloPagina={CIDADE.TITULO.LISTAR}
+            tituloPagina={USUARIO.TITULO.LISTAR}
             link={URL_DASHBOARD}
-            acao={CIDADE.OPERACAO.VOLTAR.DASHBORAD}
+            acao={USUARIO.OPERACAO.VOLTAR.DASHBORAD}
           />
           <div className="table-toolbar-container">
             <div className="table-toolbar-left">
@@ -68,10 +70,10 @@ export default function ListarCidades() {
             </div>
             <div className="table-toolbar-right">
               <ButtonLink
-                to={ROTA.CIDADE.CRIAR}
-                title={CIDADE.OPERACAO.CRIAR.ACAO}
+                to={ROTA.USUARIO.CRIAR}
+                title={USUARIO.OPERACAO.CRIAR.ACAO}
                 className="btn btn-add ml-3 "
-                icon={<FaPlus size={UI_CONFIG.BUTTON_SIZE}/>}
+                icon={<FaPlus size={UI_CONFIG.BUTTON_SIZE} />}
               >
                 {BTN.NEW}
               </ButtonLink>
@@ -82,55 +84,93 @@ export default function ListarCidades() {
               <thead>
                 <tr>
                   <th
-                    onClick={() => handleSort(CIDADE.FIELDS.CODIGO)}
+                    onClick={() => handleSort(USUARIO.FIELDS.CODIGO_USUARIO)}
                     className="table-sort-cursor"
                   >
-                    {CIDADE.LABEL.CODIGO_CIDADE}{" "}
-                    {getSortIcon(CIDADE.FIELDS.CODIGO)}
+                    {USUARIO.LABEL.CODIGO_USUARIO}{" "}
+                    {getSortIcon(USUARIO.FIELDS.CODIGO_USUARIO)}
                   </th>
                   <th
-                    onClick={() => handleSort(CIDADE.FIELDS.NOME)}
+                    onClick={() => handleSort(USUARIO.FIELDS.NOME_USUARIO)}
                     className="table-sort-cursor"
                   >
-                    {CIDADE.LABEL.NOME_CIDADE} {getSortIcon(CIDADE.FIELDS.NOME)}
+                    {USUARIO.LABEL.NOME_USUARIO}{" "}
+                    {getSortIcon(USUARIO.FIELDS.NOME_USUARIO)}
+                  </th>
+                  <th
+                    onClick={() => handleSort(USUARIO.FIELDS.TIPO_USUARIO)}
+                    className="table-sort-cursor"
+                  >
+                    {USUARIO.LABEL.TIPO_USUARIO}{" "}
+                    {getSortIcon(USUARIO.FIELDS.TIPO_USUARIO)}
+                  </th>
+                  <th
+                    onClick={() => handleSort(USUARIO.FIELDS.STATUS)}
+                    className="table-sort-cursor"
+                  >
+                    {USUARIO.LABEL.STATUS} {getSortIcon(USUARIO.FIELDS.STATUS)}
                   </th>
                   <th className="center actions" colSpan={3}>
-                    {<MdOutlinePendingActions size={UI_CONFIG.BUTTON_SIZE}/>} {CIDADE.LABEL.ACAO}
+                    {<MdOutlinePendingActions />} {USUARIO.LABEL.ACAO}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {currentRecords.length > 0 ? (
                   currentRecords.map((model) => (
-                    <tr key={model.idCidade}>
-                      <td data-label={CIDADE.LABEL.CODIGO_CIDADE}>
-                        {model.codCidade}
+                    <tr key={model.idUsuario}>
+                      <td data-label={USUARIO.LABEL.CODIGO_USUARIO}>
+                        {model.codUsuario}
                       </td>
-                      <td data-label={CIDADE.LABEL.NOME_CIDADE}>
-                        {model.nomeCidade}
+                      <td data-label={USUARIO.LABEL.NOME_USUARIO}>
+                        {model.nomeUsuario}
+                      </td>
+                      <td
+                        data-label={USUARIO.LABEL.TIPO_USUARIO}
+                        className="status-cell"
+                      >
+                        <span
+                          className={`status-badge ${model.tipo === TipoUsuarioEnum.ALUNO ? "background-secondary" : "background-info "}`}
+                        >
+                          {model.tipo === TipoUsuarioEnum.ALUNO
+                            ? "Aluno"
+                            : "Professor"}
+                        </span>
+                      </td>
+                      <td
+                        data-label={USUARIO.LABEL.STATUS}
+                        className="status-cell"
+                      >
+                        <span
+                          className={`status-badge ${model.ativo === "0" ? "inative" : "active"}`}
+                        >
+                          {model.ativo === "0" ? "Inativo" : "Ativo"}
+                        </span>
                       </td>
                       <td data-label="Ação" className="center actions">
                         <ButtonLink
-                          to={`${ROTA.CIDADE.ATUALIZAR}/${model.idCidade}`}
-                          title={CIDADE.OPERACAO.ATUALIZAR.ACAO}
+                          to={`${ROTA.USUARIO.ATUALIZAR}/${model.idUsuario}`}
+                          title={USUARIO.OPERACAO.ATUALIZAR.ACAO}
                           className="btn btn-edit ml-2"
-                          icon={<FaPencilAlt size={UI_CONFIG.BUTTON_SIZE}/>}
+                          icon={<FaPencilAlt size={UI_CONFIG.BUTTON_SIZE} />}
                         >
                           {/* {UI_CONFIG.BTN.EDIT} */}
                         </ButtonLink>
                         <ButtonLink
-                          to={`${ROTA.CIDADE.EXCLUIR}/${model.idCidade}`}
-                          title={CIDADE.OPERACAO.EXCLUIR.ACAO}
+                          to={`${ROTA.USUARIO.EXCLUIR}/${model.idUsuario}`}
+                          title={USUARIO.OPERACAO.EXCLUIR.ACAO}
                           className="btn btn-delete ml-2"
-                          icon={<FaTrashAlt size={UI_CONFIG.BUTTON_SIZE}/>}
+                          icon={<FaTrashAlt size={UI_CONFIG.BUTTON_SIZE} />}
                         >
                           {/* {UI_CONFIG.BTN.DELETE} */}
                         </ButtonLink>
                         <ButtonLink
-                          to={`${ROTA.CIDADE.POR_ID}/${model.idCidade}`}
-                          title={CIDADE.OPERACAO.POR_ID.ACAO}
+                          to={`${ROTA.USUARIO.POR_ID}/${model.idUsuario}`}
+                          title={USUARIO.OPERACAO.POR_ID.ACAO}
                           className="btn btn-info ml-2 mr-2"
-                          icon={<FaMagnifyingGlass size={UI_CONFIG.BUTTON_SIZE}/>}
+                          icon={
+                            <FaMagnifyingGlass size={UI_CONFIG.BUTTON_SIZE} />
+                          }
                         >
                           {/* {UI_CONFIG.BTN.QUERY} */}
                         </ButtonLink>

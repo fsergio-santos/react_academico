@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAlert } from "../../../contexto/AlertContexto";
-import { ROTA } from "../../router/Url";
+import { useAlert } from "../../../../contexto/AlertContexto";
+import { ROTA } from "../../../router/Url";
 import { CIDADE } from "../constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../type/cidade";
 import {
